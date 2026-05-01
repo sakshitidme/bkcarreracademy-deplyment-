@@ -14,7 +14,7 @@ jobs:
         with:
           host: ${{ secrets.HOST_IP }}
           username: ${{ secrets.HOST_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          password: ${{ secrets.HOST_PASSWORD }}
           script: |
             # 1. Setup Folder (Agar nahi hai toh banayega)
             mkdir -p /var/www/bkcarreracademy
