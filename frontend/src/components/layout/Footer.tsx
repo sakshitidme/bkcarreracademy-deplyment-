@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Twitter, Linkedin, Youtube, Users } from 'lucide-react';
 import { SocialIcon } from '../common/SocialIcon';
 
@@ -14,7 +15,6 @@ const VisitorCounter = () => {
   const [dbStatus, setDbStatus] = React.useState<'checking' | 'connected' | 'offline'>('checking');
   
   React.useEffect(() => {
-    // 1. Fetch real count and DB status
     fetch('/api/visitor-count')
       .then(res => res.json())
       .then(data => {
@@ -25,7 +25,6 @@ const VisitorCounter = () => {
       })
       .catch(() => setDbStatus('offline'));
 
-    // 2. Simulate incremental growth
     const timer = setInterval(() => {
       setCount(prev => prev + 1);
     }, Math.random() * 15000 + 8000);
@@ -70,10 +69,9 @@ const XIcon = ({ size = 18 }: { size?: number }) => (
   </svg>
 );
 
-export const Footer: React.FC<FooterProps> = ({ setView, setSelectedCategory, setIsRegistrationModalOpen }) => {
+export const Footer: React.FC<FooterProps> = ({ setView, setSelectedCategory, setIsRegistrationModalOpen, setSelectedExamName }) => {
   return (
     <footer className="relative bg-white border-t-8 border-ink pt-20 pb-12 px-8 overflow-hidden">
-      {/* Decorative Branding Watermark */}
       <div className="absolute top-0 right-0 text-[15rem] font-display font-black text-ink/[0.02] leading-none select-none -translate-y-1/4 translate-x-1/4">
         BKCA
       </div>
@@ -82,7 +80,7 @@ export const Footer: React.FC<FooterProps> = ({ setView, setSelectedCategory, se
         <div className="lg:col-span-2">
           <div className="flex items-center gap-4 mb-8">
             <div className="w-12 h-12 border-4 border-ink flex items-center justify-center bg-brand">
-              <span className="font-display font-black text-2xl">BK</span>
+              <span className="font-display font-black text-2xl text-red-600">BK</span>
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-display font-black uppercase leading-none text-ink">Career Academy</span>
@@ -112,18 +110,14 @@ export const Footer: React.FC<FooterProps> = ({ setView, setSelectedCategory, se
             <span className="uppercase tracking-wider text-ink">About Exam</span>
           </h4>
           <ul className="space-y-4 text-sm text-muted font-body">
-            <li><button onClick={() => { setSelectedExamName?.('UPSC (IAS, IPS, IFS)'); setView('dynamicExamDetail'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors cursor-pointer text-left">UPSC Civil Services</button></li>
-            <li><button onClick={() => { setView('courseDetailMPSC'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors cursor-pointer text-left">MPSC Exams</button></li>
-            <li><button onClick={() => { setSelectedExamName?.('SSC (Staff Selection Commission)'); setView('dynamicExamDetail'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors cursor-pointer text-left">SSC CGL</button></li>
-            <li><button onClick={() => { setSelectedExamName?.('Banking & Finance Exams'); setView('dynamicExamDetail'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors cursor-pointer text-left">Banking & Finance</button></li>
-            <li><button onClick={() => { setSelectedExamName?.('Defence Exams'); setView('dynamicExamDetail'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors cursor-pointer text-left">Defence Exams</button></li>
-            <li><button onClick={() => { setView('courseDetailPolice'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors cursor-pointer text-left">Police Bharti</button></li>
-            <li><button onClick={() => { setSelectedExamName?.('Railway Exams (RRB)'); setView('dynamicExamDetail'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors cursor-pointer text-left">Railway Exams (RRB)</button></li>
-            <li><button onClick={() => { setSelectedExamName?.('Teaching & Education Exams'); setView('dynamicExamDetail'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors cursor-pointer text-left">Teaching & Education</button></li>
-            <li><button onClick={() => { setSelectedExamName?.('Insurance Exams'); setView('dynamicExamDetail'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors cursor-pointer text-left">Insurance Exams</button></li>
-            <li><button onClick={() => { setSelectedExamName?.('Engineering & PSU Exams'); setView('dynamicExamDetail'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors cursor-pointer text-left">Engineering & PSUs</button></li>
-            <li><button onClick={() => { setSelectedExamName?.('Law & Judiciary Exams'); setView('dynamicExamDetail'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors cursor-pointer text-left">Law & Judiciary</button></li>
-            <li><button onClick={() => { setSelectedExamName?.('Medical & Nursing Exams'); setView('dynamicExamDetail'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors cursor-pointer text-left">Medical & Nursing</button></li>
+            <li><Link to="/exam/UPSC%20(IAS%2C%20IPS%2C%20IFS)" onClick={() => { setSelectedExamName?.('UPSC (IAS, IPS, IFS)'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors block">UPSC Civil Services</Link></li>
+            <li><Link to="/mpsc" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-brand transition-colors block">MPSC Exams</Link></li>
+            <li><Link to="/exam/SSC%20(Staff%20Selection%20Commission)" onClick={() => { setSelectedExamName?.('SSC (Staff Selection Commission)'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors block">SSC CGL</Link></li>
+            <li><Link to="/exam/Banking%20%26%20Finance%20Exams" onClick={() => { setSelectedExamName?.('Banking & Finance Exams'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors block">Banking & Finance</Link></li>
+            <li><Link to="/exam/Defence%20Exams" onClick={() => { setSelectedExamName?.('Defence Exams'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors block">Defence Exams</Link></li>
+            <li><Link to="/police" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-brand transition-colors block">Police Bharti</Link></li>
+            <li><Link to="/exam/Railway%20Exams%20(RRB)" onClick={() => { setSelectedExamName?.('Railway Exams (RRB)'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors block">Railway Exams (RRB)</Link></li>
+            <li><Link to="/exam/Teaching%20%26%20Education%20Exams" onClick={() => { setSelectedExamName?.('Teaching & Education Exams'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:text-brand transition-colors block">Teaching & Education</Link></li>
           </ul>
         </div>
 
@@ -189,21 +183,25 @@ export const Footer: React.FC<FooterProps> = ({ setView, setSelectedCategory, se
       </div>
 
       <div className="max-w-[1800px] mx-auto pt-10 border-t border-ink/10 flex flex-col md:flex-row justify-between items-center gap-6">
-        <div className="flex items-center gap-4 cursor-pointer group" onClick={() => { setView('home'); setSelectedCategory(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+        <Link to="/" className="flex items-center gap-4 cursor-pointer group" onClick={() => { setSelectedCategory(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
            <div className="w-10 h-10 border-4 border-ink flex items-center justify-center bg-brand group-hover:rotate-6 transition-transform">
-              <span className="font-display font-black text-xl">BK</span>
+              <span className="font-display font-black text-xl text-red-600">BK</span>
             </div>
           <div className="flex flex-col">
             <div className="text-lg text-ink font-display font-black uppercase leading-none">Career Academy</div>
             <div className="text-[10px] text-brand font-mono uppercase tracking-wider font-bold mt-1">Education & Welfare Society</div>
           </div>
-        </div>
+        </Link>
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-xs text-muted font-mono uppercase tracking-widest opacity-60">
           <a href="#" className="hover:text-brand transition-colors">CSR Policy</a>
           <a href="#" className="hover:text-brand transition-colors">Privacy Policy</a>
           <a href="#" className="hover:text-brand transition-colors">Refund Rules</a>
           <a href="#" className="hover:text-brand transition-colors">Terms & Conditions</a>
         </div>
+      </div>
+
+      <div className="max-w-[1800px] mx-auto mt-12 text-[10px] text-ink/10 font-mono uppercase text-center pointer-events-none select-none">
+        UPSC Coaching Nashik • MPSC Classes Nashik • Banking Exam Prep Maharashtra • SSC CGL Coaching Nashik • Police Bharti Training Nashik • Best Competitive Exam Academy Nashik • BK Career Academy Nashik Maharashtra
       </div>
     </footer>
   );

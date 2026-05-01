@@ -165,7 +165,7 @@ export const HomeHero: React.FC<HomeHeroProps> = ({
               ) : (
                 <img 
                   src={activeMedia.src} 
-                  alt={activeMedia.title || "Hero Image"}
+                  alt={activeMedia.title || "BK Career Academy Success Story Image"}
                   className="w-full h-full object-cover"
                 />
               )}

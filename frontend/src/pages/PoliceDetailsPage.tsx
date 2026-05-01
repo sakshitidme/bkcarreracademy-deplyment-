@@ -385,3 +385,5 @@ export const PoliceDetailsPage: React.FC<PoliceDetailsPageProps> = ({
     </motion.div>
   );
 };
+
+export default PoliceDetailsPage;

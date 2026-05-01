@@ -617,3 +617,5 @@ export const MPSCDetailsPage: React.FC<MPSCDetailsPageProps> = ({
     </motion.div>
   );
 };
+
+export default MPSCDetailsPage;

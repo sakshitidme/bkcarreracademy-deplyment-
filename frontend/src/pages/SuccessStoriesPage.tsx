@@ -107,3 +107,5 @@ export const SuccessStoriesPage: React.FC<SuccessStoriesPageProps> = ({ stories,
     </motion.div>
   );
 };
+
+export default SuccessStoriesPage;

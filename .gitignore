@@ -43,3 +43,10 @@ db_data/
 backups/
 scripts/test_*.js
 backend/test_*.js
+
+# Large media files
+*.mp4
+*.mp3
+*.mov
+*.avi
+*.webm

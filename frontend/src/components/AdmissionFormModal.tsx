@@ -312,7 +312,7 @@ export default function AdmissionFormModal({ isOpen, onClose }: AdmissionFormMod
     // Fetch and convert academy logo to Base64 for reliability
     let logoBase64 = '';
     try {
-      const response = await fetch('/images/about_logos/bk.png');
+      const response = await fetch('/SanskarLogopage-BuCH7rsc.jpg');
       const blob = await response.blob();
       logoBase64 = await getBase64(new File([blob], 'logo.png'));
     } catch (e) { console.error('Logo fetch failed', e); }
@@ -344,7 +344,7 @@ export default function AdmissionFormModal({ isOpen, onClose }: AdmissionFormMod
             .form-title { text-align: center; font-size: 18px; font-weight: 900; text-transform: uppercase; margin: 10px 0; letter-spacing: 4px; color: #1a1a1a; }
             
             /* Photos */
-            .visuals-row { display: flex; justify-content: flex-end; gap: 20px; margin-bottom: 10px; }
+            .visuals-row { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; margin-bottom: 10px; }
             .photo-frame { width: 100px; height: 120px; border: 2px solid #1a1a1a; padding: 2px; background: white; }
             .photo-img { width: 100%; height: 100%; object-fit: cover; }
             .sig-frame { width: 160px; height: 50px; border: 2px solid #1a1a1a; padding: 2px; margin-top: 5px; }
@@ -377,37 +377,62 @@ export default function AdmissionFormModal({ isOpen, onClose }: AdmissionFormMod
         <body>
           <div class="page">
             ${isPaid ? `<div class="payment-badge">PAID ONLINE</div>` : ''}
-            <div class="header-container">
-              <div class="logo-section">
-                ${logoBase64 ? `<img src="${logoBase64}" class="logo-img" />` : ''}
-                <div class="brand-text">
-                  <h1>बीके एज्युकेशनल अँड वेल्फेअर सोसायटी</h1>
-                  <h2>बीके ग्रुप ऑफ एज्युकेशन</h2>
-                  <p>BK EDUCATIONAL & WELFARE SOCIETY</p>
-                  <p>BK GROUP OF EDUCATION</p>
-                  <div class="reg-no-text">Reg. No. : F-12121/Nashik/Maharashtra</div>
-                </div>
+            <div class="header-container" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; border-bottom: 3px solid #1a1a1a; padding-bottom: 15px; margin-bottom: 10px;">
+              <!-- Left: Name -->
+              <div style="flex: 1.5; text-align: left;">
+                <h1 style="margin: 0; font-size: 14px; font-weight: 900; text-transform: uppercase; color: #800000; letter-spacing: 1px;">BK EDUCATIONAL & WELFARE SOCIETY</h1>
               </div>
-              <div class="meta-info">
-                <div>
-                  <div class="meta-label">Registration Number</div>
-                  <div class="meta-box">${formData.registrationNo}</div>
-                </div>
-                <div>
-                  <div class="meta-label">Form Number</div>
-                  <div class="meta-box">${formData.formNo}</div>
-                </div>
-                <div style="font-size: 9px; font-weight: 900; color: #1a1a1a; display: flex; align-items: center; height: 32px;">DATE: ${formData.date || new Date().toISOString().split('T')[0]}</div>
+
+              <!-- Center: Logo & Motto -->
+              <div style="flex: 0.6; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                <div style="font-size: 8px; font-weight: 900; color: #1a1a1a; margin-bottom: 5px; white-space: nowrap;">| नही ज्ञानेन सदृशं पवित्रमिह विद्यते |</div>
+                ${logoBase64 ? `<img src="${logoBase64}" style="width: 60px; height: 60px; object-fit: contain;" />` : ''}
               </div>
-              ${isPaid ? `
-              <div style="width: 100%; margin-top: 10px; display: flex; justify-content: center; gap: 20px;">
-                <div style="font-size: 8px; color: #059669; font-weight: 900; text-transform: uppercase;">Payment Status: SUCCESSFUL</div>
-                <div style="font-size: 8px; color: #1a1a1a; font-weight: 900; text-transform: uppercase;">TXN ID: ${razorpayPaymentId || 'N/A'}</div>
-                <div style="font-size: 8px; color: #1a1a1a; font-weight: 900; text-transform: uppercase;">Amount: ₹199.00</div>
-              </div>` : ''}
+
+              <!-- Right: Address -->
+              <div style="flex: 1.5; text-align: right; font-size: 8px; font-weight: 700; color: #1a1a1a; line-height: 1.4;">
+                2nd Floor, Gajanan Plaza, Gharpure Ghat Road, Ashok Stambh, Nashik, Maharashtra 422002<br/>
+                <strong>PH: +91 80801 95558 | EMAIL: bkgroupofeducation@gmail.com</strong>
+              </div>
             </div>
 
+            <!-- Meta Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #f8f8f8; padding: 8px 15px; border-radius: 6px; margin-bottom: 15px; border: 1px solid #eee;">
+              <div style="display: flex; gap: 20px;">
+                <div>
+                  <div style="font-size: 7px; color: #888; text-transform: uppercase; font-weight: 700; margin-bottom: 2px;">Registration Number</div>
+                  <div style="background: #1a1a1a; color: white; padding: 4px 10px; font-size: 10px; font-weight: 900; border-radius: 4px;">
+                    ${formData.registrationNo.startsWith('BK') ? `<span style="color: #ff0000;">BK</span>${formData.registrationNo.substring(2)}` : formData.registrationNo}
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size: 7px; color: #888; text-transform: uppercase; font-weight: 700; margin-bottom: 2px;">Form Number</div>
+                  <div style="background: #1a1a1a; color: white; padding: 4px 10px; font-size: 10px; font-weight: 900; border-radius: 4px;">
+                    ${formData.formNo}
+                  </div>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                 <div style="font-size: 7px; color: #888; text-transform: uppercase; font-weight: 700; margin-bottom: 2px;">DATE OF ISSUE</div>
+                 <div style="font-size: 11px; font-weight: 900; color: #1a1a1a;">${formData.date || new Date().toISOString().split('T')[0]}</div>
+              </div>
+            </div>
+
+            ${isPaid ? `
+            <div style="width: 100%; margin: -5px 0 15px 0; display: flex; justify-content: center; gap: 15px; border: 1px dashed #059669; padding: 5px; border-radius: 4px; background: rgba(5, 150, 105, 0.05);">
+              <div style="font-size: 8px; color: #059669; font-weight: 900; text-transform: uppercase;">Payment Status: SUCCESSFUL</div>
+              <div style="font-size: 8px; color: #1a1a1a; font-weight: 900; text-transform: uppercase;">TXN ID: ${razorpayPaymentId || 'N/A'}</div>
+              <div style="font-size: 8px; color: #1a1a1a; font-weight: 900; text-transform: uppercase;">Amount: ₹199.00</div>
+            </div>` : ''}
+
             <div class="visuals-row">
+              <div style="flex-grow: 1; margin-bottom: 10px;">
+                <div class="form-title" style="text-align: left; margin: 0; font-size: 22px; border-bottom: 2px solid #1a1a1a; display: inline-block; padding-right: 40px;">Student Admission Record</div>
+                <div style="margin-top: 8px; font-size: 9px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
+                  Official Academy Copy - Session 2026-27<br/>
+                  Valid for all Competitive Exam Batches
+                </div>
+              </div>
               <div style="display: flex; flex-direction: column; align-items: center;">
                 <div class="photo-frame">
                   ${photoBase64 ? `<img src="${photoBase64}" class="photo-img" />` : '<div style="height:100%; display:flex; align-items:center; justify-content:center; color:#ccc;">PHOTO</div>'}
@@ -415,8 +440,6 @@ export default function AdmissionFormModal({ isOpen, onClose }: AdmissionFormMod
                 <div class="label-small">Passport Photo</div>
               </div>
             </div>
-
-            <div class="form-title">Student Admission Record</div>
 
             <div class="section">
               <div class="section-title">Selected Programs</div>
@@ -543,36 +566,49 @@ export default function AdmissionFormModal({ isOpen, onClose }: AdmissionFormMod
                 >
                   <X size={16} />
                 </button>
-                <div className="grid grid-cols-[1.2fr_0.6fr_1.2fr] items-center gap-2 sm:gap-8 px-2 py-2">
-                  {/* Left: Marathi Wordings */}
-                  <div className="text-[#800000] font-display font-black leading-[1.05] text-left border-r-4 border-brand/20 pr-4 sm:pr-8">
-                    <h1 className="text-[16px] sm:text-[27px] uppercase tracking-tighter">बीके एज्युकेशनल अँड वेल्फेअर सोसायटी</h1>
-                    <h2 className="text-[12px] sm:text-[18px] uppercase text-ink/70 mt-1">बीके ग्रुप ऑफ एज्युकेशन</h2>
+                <div className="flex flex-col sm:grid sm:grid-cols-[1fr_0.4fr_1.6fr] items-center gap-6 sm:gap-4 px-2 py-4">
+                  {/* Left: (Empty or Motto for Desktop) */}
+                  <div className="hidden sm:block text-[#800000] font-display font-black leading-none text-left border-r-2 border-brand/10 pr-4">
+                    <span className="text-[14px] uppercase tracking-widest text-ink/40">Student Admission Portal</span>
                   </div>
 
-                  {/* Center: Logo & Formal ID */}
-                  <div className="flex flex-col items-center gap-4 relative">
+                  {/* Center: Logo & Motto */}
+                  <div className="flex flex-col items-center gap-2 relative w-full sm:w-auto">
+                    <div className="text-[10px] font-black text-ink whitespace-nowrap mb-1 text-center">
+                      | नही ज्ञानेन सदृशं पवित्रमिह विद्यते |
+                    </div>
                     <div className="relative group">
-                      <div className="absolute inset-0 bg-brand/20 blur-2xl rounded-full scale-150" />
-                      <img src="/images/about_logos/bk.png" alt="BK Logo" className="w-20 h-20 sm:w-32 sm:h-32 object-contain relative z-10 drop-shadow-2xl" />
-                    </div>
-                    <div className="text-[#800000] text-[9px] sm:text-[11px] font-mono font-black uppercase tracking-[0.2em] opacity-60 whitespace-nowrap border-t border-[#800000]/20 pt-1">
-                      Reg. No. : F-12121 / Nashik
+                      <div className="absolute inset-0 bg-brand/5 blur-xl rounded-full scale-150" />
+                      <img src="/SanskarLogopage-BuCH7rsc.jpg" alt="BK Logo" className="w-24 h-24 sm:w-20 sm:h-20 object-contain relative z-10 drop-shadow-lg" />
                     </div>
                   </div>
 
-                  {/* Right: English Wordings */}
-                  <div className="text-[#800000] font-display font-black leading-[1.05] text-right border-l-4 border-brand/20 pl-4 sm:pl-8">
-                    <p className="text-[16px] sm:text-[27px] uppercase tracking-tighter">BK EDUCATIONAL & WELFARE SOCIETY</p>
-                    <p className="text-[12px] sm:text-[18px] uppercase text-ink/70 mt-1">BK GROUP OF EDUCATION</p>
+                  {/* Right: Red Name & Address */}
+                  <div className="text-right w-full sm:pl-4 sm:border-l-2 border-brand/10">
+                    <h1 className="text-[18px] sm:text-[20px] font-black leading-[1.1] text-ink uppercase tracking-tight mb-2">
+                      BK <span className="text-[20px] sm:text-[22px] text-red-600">EDUCATIONAL & WELFARE SOCIETY</span>
+                    </h1>
+                    <p className="text-[10px] sm:text-[11px] font-bold text-ink uppercase tracking-tight leading-[1.4]">
+                      2nd Floor, Gajanan Plaza, Gharpure Ghat Road, Ashok Stambh, Nashik, Maharashtra 422002
+                    </p>
+                    <div className="mt-2 flex flex-col items-end">
+                      <span className="text-[12px] text-ink font-black">+91 80801 95558</span>
+                      <span className="text-[10px] text-muted lowercase">bkgroupofeducation@gmail.com</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-          <div className="p-4 border-b flex justify-center gap-8 text-[11px] font-mono font-bold text-ink bg-gray-50/50">
+          <div className="p-4 border-b flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 text-[11px] font-mono font-bold text-ink bg-gray-50/50">
               <div className="flex gap-2 items-center">
                  <span className="text-muted/60 uppercase text-[9px]">REGISTRATION NO:</span>
-                 <span className="text-brand px-3 py-0.5 bg-ink rounded-sm shadow-sm">{formData.registrationNo || 'LOADING...'}</span>
+                  <span className="text-brand px-3 py-0.5 bg-ink rounded-sm shadow-sm">
+                    {formData.registrationNo.startsWith('BK') ? (
+                      <><span className="text-red-600">BK</span>{formData.registrationNo.substring(2)}</>
+                    ) : (
+                      formData.registrationNo || 'LOADING...'
+                    )}
+                  </span>
               </div>
               <div className="flex gap-2 items-center">
                  <span className="text-muted/60 uppercase text-[9px]">FORM NO:</span>
@@ -635,6 +671,30 @@ export default function AdmissionFormModal({ isOpen, onClose }: AdmissionFormMod
                                 exit={{ opacity: 0, y: -10 }}
                                 className="absolute top-full left-0 right-0 z-[60] mt-1 border-2 border-ink bg-white shadow-xl max-h-48 overflow-y-auto p-2 space-y-1"
                               >
+                                  {/* Select All Option */}
+                                  <label className="flex items-center gap-2 cursor-pointer bg-brand/5 p-1.5 rounded border-b border-ink/10 group mb-1">
+                                    <input
+                                      type="checkbox"
+                                      checked={courseData[expandedCategory].every(exam => formData.courses.includes(exam))}
+                                      onChange={(e) => {
+                                        if (e.target.checked) {
+                                          const allExams = courseData[expandedCategory];
+                                          setFormData(prev => ({
+                                            ...prev,
+                                            courses: Array.from(new Set([...prev.courses, ...allExams]))
+                                          }));
+                                        } else {
+                                          const allExams = courseData[expandedCategory];
+                                          setFormData(prev => ({
+                                            ...prev,
+                                            courses: prev.courses.filter(c => !allExams.includes(c))
+                                          }));
+                                        }
+                                      }}
+                                      className="w-3.5 h-3.5 accent-brand"
+                                    />
+                                    <span className="text-[9px] font-black uppercase tracking-tight text-brand">Select All {expandedCategory} Courses</span>
+                                  </label>
                                 {courseData[expandedCategory].map(exam => (
                                   <label key={exam} className="flex items-center gap-2 cursor-pointer hover:bg-brand/10 p-1.5 rounded transition-colors group">
                                     <input
@@ -681,21 +741,18 @@ export default function AdmissionFormModal({ isOpen, onClose }: AdmissionFormMod
 
                 <div className="space-y-1.5">
                   <p className="text-[10px] font-bold uppercase">2. Salutation:</p>
-                  <div className="flex gap-4 text-[10px]">
+                  <select
+                    name="salutation"
+                    required
+                    value={formData.salutation}
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 px-2 py-1 text-xs focus:ring-2 focus:ring-brand outline-none bg-white font-bold"
+                  >
+                    <option value="">-- Select Salutation --</option>
                     {salutations.map(s => (
-                      <label key={s} className="flex items-center gap-1 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="salutation"
-                          required
-                          value={s}
-                          onChange={handleInputChange}
-                          className="w-2.5 h-2.5"
-                        />
-                        <span>{s}</span>
-                      </label>
+                      <option key={s} value={s}>{s}</option>
                     ))}
-                  </div>
+                  </select>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 border border-dashed border-gray-300 p-3 rounded-lg bg-gray-50/50 mb-2">
@@ -816,30 +873,34 @@ export default function AdmissionFormModal({ isOpen, onClose }: AdmissionFormMod
 
                 <div className="space-y-2">
                   <p className="text-xs font-bold uppercase">9. Gender:</p>
-                  <div className="flex gap-4 text-xs">
+                  <select
+                    name="gender"
+                    required
+                    value={formData.gender}
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-brand outline-none bg-white font-bold"
+                  >
+                    <option value="">-- Select Gender --</option>
                     {["Male", "Female", "Transgender", "Other"].map(g => (
-                      <label key={g} className="flex items-center gap-1 cursor-pointer">
-                        <input type="radio" name="gender" required value={g} onChange={handleInputChange} className="w-3 h-3" />
-                        <span>{g}</span>
-                      </label>
+                      <option key={g} value={g}>{g}</option>
                     ))}
-                  </div>
+                  </select>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <p className="text-xs font-bold uppercase">10. Mobile Number (Self):</p>
-                    <input type="tel" name="mobileSelf" required value={formData.mobileSelf} onChange={handleMobileChange} placeholder="10-digit number" className="w-full border border-gray-300 px-2 py-1 text-sm" />
+                    <input type="tel" name="mobileSelf" required value={formData.mobileSelf} onChange={handleMobileChange} placeholder="10-digit number" className="w-full border border-gray-300 px-3 py-2 text-sm" />
                   </div>
                   <div className="space-y-2">
                     <p className="text-xs font-bold uppercase">11. Mobile Number (Parent):</p>
-                    <input type="tel" name="mobileParents" value={formData.mobileParents} onChange={handleMobileChange} placeholder="10-digit number" className="w-full border border-gray-300 px-2 py-1 text-sm" />
+                    <input type="tel" name="mobileParents" value={formData.mobileParents} onChange={handleMobileChange} placeholder="10-digit number" className="w-full border border-gray-300 px-3 py-2 text-sm" />
                   </div>
                 </div>
 
                  <div className="space-y-1.5">
                   <p className="text-[10px] font-bold uppercase">9. Email ID:</p>
-                  <input type="email" name="email" required value={formData.email} onChange={handleInputChange} className="w-full border border-gray-300 px-2 py-1 text-xs" />
+                  <input type="email" name="email" required value={formData.email} onChange={handleInputChange} className="w-full border border-gray-300 px-3 py-2 text-sm sm:text-xs" />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-4">
@@ -966,8 +1027,8 @@ export default function AdmissionFormModal({ isOpen, onClose }: AdmissionFormMod
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 text-xs pt-2">
-                  <div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs pt-2">
+                  <div className="space-y-2">
                     <p className="font-bold uppercase mb-1">Date (YYYY-MM-DD):</p>
                     <div className="flex gap-2">
                       <input 
@@ -979,7 +1040,7 @@ export default function AdmissionFormModal({ isOpen, onClose }: AdmissionFormMod
                           const current = formData.date.split('-');
                           setFormData((prev: any) => ({ ...prev, date: `${year}-${current[1] || '01'}-${current[2] || '01'}` }));
                         }}
-                        className="w-full border-2 border-ink px-2 py-1 text-sm font-bold bg-white"
+                        className="w-full border-2 border-ink px-2 py-2 text-sm font-bold bg-white"
                       />
                       <input 
                         type="text" 
@@ -990,7 +1051,7 @@ export default function AdmissionFormModal({ isOpen, onClose }: AdmissionFormMod
                           const current = formData.date.split('-');
                           setFormData((prev: any) => ({ ...prev, date: `${current[0] || '2024'}-${month}-${current[2] || '01'}` }));
                         }}
-                        className="w-full border-2 border-ink px-2 py-1 text-sm font-bold bg-white"
+                        className="w-full border-2 border-ink px-2 py-2 text-sm font-bold bg-white"
                       />
                       <input 
                         type="text" 
@@ -1001,23 +1062,23 @@ export default function AdmissionFormModal({ isOpen, onClose }: AdmissionFormMod
                           const current = formData.date.split('-');
                           setFormData((prev: any) => ({ ...prev, date: `${current[0] || '2024'}-${current[1] || '01'}-${day}` }));
                         }}
-                        className="w-full border-2 border-ink px-2 py-1 text-sm font-bold bg-white"
+                        className="w-full border-2 border-ink px-2 py-2 text-sm font-bold bg-white"
                       />
                     </div>
                     <input type="hidden" name="date" value={formData.date} />
                   </div>
-                  <div>
+                  <div className="space-y-2">
                     <p className="font-bold uppercase mb-1">Place:</p>
-                    <input type="text" name="place" required value={formData.place} onChange={handleInputChange} className="w-full border border-gray-300 px-2 py-1 text-sm" placeholder="City/Town" />
+                    <input type="text" name="place" required value={formData.place} onChange={handleInputChange} className="w-full border border-gray-300 px-3 py-2 text-sm" placeholder="City/Town" />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 text-xs pt-2">
-                  <div>
-                    <p>Student Signature: ____________________</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs pt-4">
+                  <div className="border-t-2 border-ink pt-2">
+                    <p className="font-bold uppercase">Student Signature</p>
                   </div>
-                  <div>
-                    <p>Parent / Guardian Signature: ____________________</p>
+                  <div className="border-t-2 border-ink pt-2">
+                    <p className="font-bold uppercase">Parent / Guardian Signature</p>
                   </div>
                 </div>
 
@@ -1075,7 +1136,7 @@ export default function AdmissionFormModal({ isOpen, onClose }: AdmissionFormMod
 
                 <div className="max-w-md mx-auto bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-6 mb-8 text-left relative overflow-hidden">
                   <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                     <img src="/images/about_logos/bk.png" className="w-32" />
+                     <img src="/SanskarLogopage-BuCH7rsc.jpg" className="w-32" />
                   </div>
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Official Receipt Copy</p>
                   <div className="space-y-3">
@@ -1085,7 +1146,13 @@ export default function AdmissionFormModal({ isOpen, onClose }: AdmissionFormMod
                     </div>
                     <div className="flex justify-between border-b border-gray-100 pb-2">
                       <span className="text-xs font-bold text-gray-500">Registration No</span>
-                      <span className="text-xs font-black text-brand tracking-widest">{formData.registrationNo}</span>
+                      <span className="text-xs font-black text-brand tracking-widest">
+                        {formData.registrationNo && formData.registrationNo.startsWith('BK') ? (
+                          <><span className="text-red-600">BK</span>{formData.registrationNo.substring(2)}</>
+                        ) : (
+                          formData.registrationNo
+                        )}
+                      </span>
                     </div>
                     <div className="flex justify-between border-b border-gray-100 pb-2">
                       <span className="text-xs font-bold text-gray-500">Amount Paid</span>

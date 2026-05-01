@@ -485,3 +485,5 @@ export const MAHATETDetailsPage: React.FC<MAHATETDetailsPageProps> = ({
     </motion.div>
   );
 };
+
+export default MAHATETDetailsPage;

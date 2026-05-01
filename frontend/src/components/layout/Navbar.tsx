@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Globe, Search, Book } from 'lucide-react';
 import { BrandLogo } from '../common/BrandLogo';
@@ -24,6 +25,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   isMenuOpen,
   setIsMenuOpen
 }) => {
+  const location = useLocation();
 
   const tickerItems = [
     { text: "Breaking: 2026 Batch Admissions Open", action: () => setIsAdmissionModalOpen(true), highlight: false },
@@ -83,13 +85,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Navigation Sidebar */}
       <aside className={`fixed top-14 left-0 bottom-0 w-64 md:w-52 bg-white border-r-4 border-ink z-[110] flex flex-col items-center py-12 transition-transform duration-500 overflow-y-auto ${isMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
-        <div className="mb-16 cursor-pointer group relative flex flex-col items-center" 
-          onClick={(e) => { 
-            e.stopPropagation();
-            setView('home'); 
+        <Link 
+          to="/"
+          onClick={() => { 
             setSelectedCategory(null); 
             setIsMenuOpen(false); 
-          }}>
+          }}
+          className="mb-16 cursor-pointer group relative flex flex-col items-center"
+        >
           
           <BrandLogo className="w-12 h-12 md:w-16 md:h-16 group-hover:rotate-6 transition-transform" />
           
@@ -105,29 +108,29 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="text-[22px] font-black text-ink leading-none uppercase tracking-tighter">Academy</span>
             </div>
           </div>
-        </div>
+        </Link>
 
-        <nav className="flex-grow w-full px-6 flex flex-col gap-2">
+        <nav className="flex-grow w-full px-6 flex flex-col justify-center gap-2">
           {[
-            { id: 'home', label: 'Home', icon: '◰' },
-            { id: 'about', label: 'About Us', icon: '◎' },
-            { id: 'courses', label: 'Explore Govt exam', icon: '⌬' },
-            { id: 'syllabus', label: 'Book', icon: '◈' }
+            { id: 'home', label: 'Home', icon: '◰', path: '/' },
+            { id: 'about', label: 'About Us', icon: '◎', path: '/about' },
+            { id: 'courses', label: "Explore Govt\nExam", icon: '⌬', path: '/courses' },
+            { id: 'syllabus', label: 'Book', icon: '◈', path: '/syllabus' }
           ].map((item) => (
-            <button
+            <Link
               key={item.id}
+              to={item.path}
               onClick={() => { 
-                setView(item.id); 
                 if (item.id === 'courses' || item.id === 'home') {
                   setSelectedCategory(null);
                 }
                 setIsMenuOpen(false); 
               }}
-              className={`sidebar-link ${view === item.id ? 'active' : ''}`}
+              className={`sidebar-link ${location.pathname === item.path ? 'active' : ''}`}
             >
               <span className="text-lg opacity-40 font-mono">{item.icon}</span>
               <span>{item.label}</span>
-            </button>
+            </Link>
           ))}
           
           <div className="mt-10 pt-8 border-t-4 border-ink flex flex-col gap-4">

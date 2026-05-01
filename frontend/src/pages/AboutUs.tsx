@@ -44,12 +44,12 @@ const OrganizationCard = ({ name, url, logo }: { name: string; url: string; logo
 
 export const AboutUs = () => {
   const networks = [
-    { name: "BK Educational And Welfare Society", url: "https://bkngo.in", logo: "/images/about_logos/bk.png" },
+    { name: "BK Educational And Welfare Society", url: "https://bkngo.in", logo: "/SanskarLogopage-BuCH7rsc.jpg" },
     { name: "BK Science Academy", url: "https://bkscience.in", logo: "/images/about_logos/bk.png" },
     { name: "BK Sports Academy", url: "https://www.bksports.in/", logo: "/images/about_logos/bksports.png" },
     { name: "BK Times", url: "https://www.bktimes.co.in/", logo: "/images/about_logos/bktimes.png" },
     { name: "Gurukul Vidya Niketan", url: "https://bkgurukul.in/testimonials", logo: "/images/about_logos/GurukulLogo.jpg" },
-    { name: "Sanskar English Medium School", url: "https://www.bksanskar.in/", logo: "/images/about_logos/sanskar.png?v=" + Date.now() },
+    { name: "Sanskar English Medium School", url: "https://www.bksanskar.in/", logo: "/SanskarLogopage-BuCH7rsc.jpg" },
   ];
 
   return (
@@ -119,7 +119,7 @@ export const AboutUs = () => {
                   <div className="border-8 border-ink overflow-hidden bg-ink shadow-[20px_20px_0_0_#F7931A]">
                     <img 
                       src="/boss.jpeg" 
-                      alt="DR. ADV. ER. BHAGWAN ELMAME" 
+                      alt="Dr. Adv. Er. Bhagwan Elmame - Founder of BK Career Academy Nashik" 
                       className="w-full h-auto transition-all duration-700 scale-105 group-hover:scale-100"
                     />
                   </div>

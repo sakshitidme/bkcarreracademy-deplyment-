@@ -69,7 +69,7 @@ export const StaffCard: React.FC<StaffCardProps> = ({ member, index }) => {
          <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 z-10 w-32 h-32 rounded-full border-4 border-white shadow-xl shadow-brand/10 overflow-hidden transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 bg-white">
             <img
               src={member.image}
-              alt={member.name}
+              alt={`${member.name} - ${member.role} at BK Career Academy`}
               className="w-full h-full object-cover"
               referrerPolicy="no-referrer"
             />

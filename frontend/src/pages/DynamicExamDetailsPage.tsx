@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Clock, Calendar, GraduationCap, ArrowLeft, Target, ShieldCheck, Sparkles } from 'lucide-react';
 import BrandLogo from '../components/common/BrandLogo';
+import SEO from '../components/common/SEO';
 
 interface DynamicExamDetailsPageProps {
-  examName: string;
+  examName?: string;
   onBack: () => void;
   onRegister: () => void;
 }
@@ -146,10 +148,14 @@ const CountdownTimer: React.FC<{ examDate: string }> = ({ examDate }) => {
 };
 
 export const DynamicExamDetailsPage: React.FC<DynamicExamDetailsPageProps> = ({
-  examName,
+  examName: propsExamName,
   onBack,
   onRegister
 }) => {
+  const { examName: urlExamName } = useParams();
+  const examName = propsExamName || urlExamName || '';
+  const navigate = useNavigate();
+  
   const [content, setContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -175,10 +181,7 @@ export const DynamicExamDetailsPage: React.FC<DynamicExamDetailsPageProps> = ({
         ).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
         if (matches.length > 0) {
-          // Aggregate ALL sections from history
           const allSections = matches.reduce((acc, curr) => [...acc, ...(curr.dynamicSections || [])], []);
-          
-          // Find the most recent non-empty image and date
           const firstWithImage = matches.find(m => m.image);
           const firstWithDate = matches.find(m => m.examDate);
           
@@ -202,6 +205,12 @@ export const DynamicExamDetailsPage: React.FC<DynamicExamDetailsPageProps> = ({
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-[#F8F9FA] relative">
+      <SEO 
+        title={`${examName} Coaching & Exam Details | BK Academy`}
+        description={`Get complete details about ${examName} exam pattern, syllabus, and coaching at BK Career Academy Nashik.`}
+        canonical={`https://bkeducation.in/exam/${encodeURIComponent(examName)}`}
+      />
+      
       <nav className="fixed top-14 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-3rem)] max-w-7xl">
         <div className="bg-white/80 backdrop-blur-2xl border border-white/40 h-20 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] px-8 flex items-center justify-between">
           <div className="flex items-center gap-4 cursor-pointer" onClick={onBack}>
@@ -241,7 +250,7 @@ export const DynamicExamDetailsPage: React.FC<DynamicExamDetailsPageProps> = ({
             {content.examDate && <CountdownTimer examDate={content.examDate} />}
             {content.image && (
               <div className="w-full h-[500px] md:h-[700px] overflow-hidden rounded-[3rem] shadow-2xl relative">
-                 <img src={content.image} className="w-full h-full object-cover" />
+                 <img src={content.image} alt={`${examName} Syllabus and Exam Pattern Details`} className="w-full h-full object-cover" />
                  <div className="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent" />
                  <div className="absolute bottom-12 left-12">
                     <div className="text-brand text-xs font-mono font-black uppercase tracking-[0.5em] mb-4">Official Visual Record</div>

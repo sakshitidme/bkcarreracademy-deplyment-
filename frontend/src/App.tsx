@@ -1,16 +1,19 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { AnimatePresence } from "motion/react";
 
 // Components
 import RegistrationModal from './components/RegistrationModal';
 import AdmissionFormModal from './components/AdmissionFormModal';
+import AddStoryModal from './components/AddStoryModal';
 import ChatWidget from './components/ChatWidget';
 import ScrollToTop from './components/ScrollToTop';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
+import SEO from './components/common/SEO';
 
-// Lazy Loaded Pages for Performance
+// Lazy Loaded Pages
 const Home = lazy(() => import('./pages/Home'));
 const Courses = lazy(() => import('./pages/Courses'));
 const SyllabusPortal = lazy(() => import('./pages/SyllabusPortal'));
@@ -22,13 +25,11 @@ const MAHATETDetailsPage = lazy(() => import('./pages/MAHATETDetailsPage'));
 const DynamicExamDetailsPage = lazy(() => import('./pages/DynamicExamDetailsPage'));
 const AdminPortal = lazy(() => import('./components/AdminPortal'));
 const LeadLogin = lazy(() => import('./components/LeadLogin'));
-const AddStoryModal = lazy(() => import('./components/AddStoryModal'));
 
 // Data
 import { INITIAL_STORIES, Story } from './data/stories';
 import { EXAM_CATEGORIES } from './data/constants';
 
-// Loading Component
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
     <div className="w-12 h-12 border-4 border-ink border-t-brand animate-spin rounded-full"></div>
@@ -36,27 +37,40 @@ const PageLoader = () => (
 );
 
 export default function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [view, setView] = useState<'home' | 'courses' | 'syllabus' | 'about' | 'adminLogin' | 'courseDetailMPSC' | 'courseDetailPolice' | 'courseDetailMAHATET' | 'successStories' | 'dynamicExamDetail'>('home');
+  
+  // Map current location to a view string for legacy components if needed
+  const getViewFromPath = (path: string) => {
+    if (path === '/') return 'home';
+    if (path.startsWith('/courses')) return 'courses';
+    if (path === '/syllabus') return 'syllabus';
+    if (path === '/about') return 'about';
+    if (path === '/success-stories') return 'successStories';
+    if (path === '/mpsc') return 'courseDetailMPSC';
+    if (path === '/police') return 'courseDetailPolice';
+    if (path === '/mahatet') return 'courseDetailMAHATET';
+    if (path.startsWith('/exam/')) return 'dynamicExamDetail';
+    if (path === '/admin-portal') return 'adminLogin';
+    return 'home';
+  };
 
-  // URL Path Routing for Admin Portal
-  useEffect(() => {
-    const path = window.location.pathname;
-    if (path === '/admin-portal') {
-      setView('adminLogin');
-    }
-  }, []);
-
-  // Update URL when view changes (simple history management)
-  useEffect(() => {
-    if (view === 'adminLogin') {
-      if (window.location.pathname !== '/admin-portal') {
-        window.history.pushState({}, '', '/admin-portal');
-      }
-    } else if (window.location.pathname === '/admin-portal') {
-      window.history.pushState({}, '', '/');
-    }
-  }, [view]);
+  const view = getViewFromPath(location.pathname);
+  const setView = (v: string) => {
+    const paths: Record<string, string> = {
+      home: '/',
+      courses: '/courses',
+      syllabus: '/syllabus',
+      about: '/about',
+      successStories: '/success-stories',
+      courseDetailMPSC: '/mpsc',
+      courseDetailPolice: '/police',
+      courseDetailMAHATET: '/mahatet',
+      adminLogin: '/admin-portal'
+    };
+    if (paths[v]) navigate(paths[v]);
+  };
 
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedSyllabusId, setSelectedSyllabusId] = useState<number | null>(null);
@@ -117,25 +131,16 @@ export default function App() {
       
       const responses = await Promise.all(endpoints.map(url => fetch(url)));
       const dataResults = await Promise.all(responses.map(async (res, idx) => {
-        if (!res.ok) {
-          console.error(`Fetch failed for ${endpoints[idx]}: ${res.status}`);
-          return { items: [] };
-        }
-        try {
-          return await res.json();
-        } catch (e) {
-          console.error(`JSON parse failed for ${endpoints[idx]}`);
-          return { items: [] };
-        }
+        if (!res.ok) return { items: [] };
+        try { return await res.json(); } catch (e) { return { items: [] }; }
       }));
 
       const [coursesData, upscData, quickData, examsData] = dataResults;
       
-      // Process Courses (strictly from courses and upsc_hub sections)
       const courses = [
         ...(coursesData.items || []), 
         ...(upscData.items || [])
-      ].filter(item => item.section !== 'exams') // Explicit filter
+      ].filter(item => item.section !== 'exams')
       .map(item => ({
         ...item,
         id: item._id, 
@@ -143,9 +148,8 @@ export default function App() {
         isRecent: true
       }));
 
-      // Process Exams (strictly from exams section)
       const exams = (examsData.items || [])
-        .filter(item => item.section === 'exams') // Explicit filter
+        .filter(item => item.section === 'exams')
         .map(item => ({
         ...item,
         id: item._id,
@@ -162,70 +166,8 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (view === 'home' || view === 'courses') {
-      fetchAllContent();
-    }
-
-    const seoData: Record<string, { title: string; description: string }> = {
-      home: {
-        title: "BK Career Academy | UPSC, MPSC & Competitive Exam Coaching Nashik",
-        description: "Join Nashik's most trusted coaching academy for UPSC, MPSC, Banking, and SSC exams. Expert guidance, proven success, and comprehensive study material."
-      },
-      courses: {
-        title: "Explore Courses | UPSC, MPSC, Banking, SSC | BK Academy",
-        description: "Discover our specialized coaching programs for civil services and competitive exams. Flexible batches and expert-led sessions in Nashik."
-      },
-      syllabus: {
-        title: "Detailed UPSC Syllabus & Exam Pattern | BK Academy",
-        description: "Get the complete UPSC Civil Services syllabus, exam pattern, and preparation strategy. Your ultimate guide to cracking the IAS/IPS exams."
-      },
-      about: {
-        title: "About Us | Our Vision & Success Stories | BK Academy",
-        description: "Learn about BK Career Academy's 15-year legacy of empowering students. Our mission, our network, and our commitment to educational excellence."
-      },
-      courseDetailMPSC: {
-        title: "MPSC Coaching in Nashik | Syllabus & Batch Details",
-        description: "Ace the MPSC Rajyaseva and Subordinate Services exams with our targeted coaching. Full GS and CSAT coverage with mock tests."
-      },
-      courseDetailPolice: {
-        title: "Police Bharti Training Nashik | Physical & Written Prep",
-        description: "Complete preparation for Maharashtra Police Recruitment. Expert physical training and dedicated written exam coaching in Nashik."
-      },
-      courseDetailMAHATET: {
-        title: "MAHA TET Exam Coaching | Teacher Eligibility Test Prep",
-        description: "Prepare for MAHA TET and CTET with Nashik's leading experts. Comprehensive coverage of Child Development, Pedagogy, and Subject-specific topics."
-      },
-      successStories: {
-        title: "Success Stories | Real Results from Our Students",
-        description: "Read inspiring stories from our successful candidates who cracked UPSC, MPSC, and Banking exams with BK Career Academy."
-      }
-    };
-
-    const currentSEO = seoData[view] || seoData.home;
-    document.title = currentSEO.title;
-
-    // Update Meta Description
-    let metaDescription = document.querySelector('meta[name="description"]');
-    if (!metaDescription) {
-      metaDescription = document.createElement('meta');
-      metaDescription.setAttribute('name', 'description');
-      document.head.appendChild(metaDescription);
-    }
-    metaDescription.setAttribute('content', currentSEO.description);
-
-    // Update Canonical URL
-    let canonical = document.querySelector('link[rel="canonical"]');
-    if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.setAttribute('rel', 'canonical');
-      document.head.appendChild(canonical);
-    }
-    const path = view === 'home' ? '' : view;
-    canonical.setAttribute('href', `https://bkeducation.in/${path}`);
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setIsMenuOpen(false);
-  }, [view]);
+    fetchAllContent();
+  }, []);
 
   const handleLeadLogin = (data: any, skip: boolean = false) => {
     localStorage.setItem("bk_authorized_user", JSON.stringify({ ...data, isGuest: skip, ts: new Date().toISOString() }));
@@ -242,163 +184,240 @@ export default function App() {
           {showMandatoryLogin && <LeadLogin onLogin={handleLeadLogin} showSkip={false} onCancel={() => setShowMandatoryLogin(false)} />}
         </AnimatePresence>
 
-        {view === 'adminLogin' ? (
-          <AdminPortal onBack={() => setView('home')} onUpdate={fetchAllContent} />
-        ) : (
-          <>
-            <Navbar 
-              view={view}
-              setView={setView}
-              setSelectedCategory={setSelectedCategory}
-              setSelectedSyllabusId={setSelectedSyllabusId}
-              setIsRegistrationModalOpen={setIsRegistrationModalOpen}
-              setIsAdmissionModalOpen={setIsAdmissionModalOpen}
-              isMenuOpen={isMenuOpen}
-              setIsMenuOpen={setIsMenuOpen}
-            />
-
-            <main className="pl-0 md:pl-52 relative min-h-screen">
-              <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.05]" 
-                style={{
-                  backgroundImage: `linear-gradient(#1A1A1A 1px, transparent 1px), linear-gradient(90deg, #1A1A1A 1px, transparent 1px)`,
-                  backgroundSize: '40px 40px'
-                }}
+        <Routes>
+          <Route path="/admin-portal" element={<AdminPortal onBack={() => navigate('/')} onUpdate={fetchAllContent} />} />
+          
+          <Route path="*" element={
+            <>
+              <Navbar 
+                view={view}
+                setView={setView}
+                setSelectedCategory={setSelectedCategory}
+                setSelectedSyllabusId={setSelectedSyllabusId}
+                setIsRegistrationModalOpen={setIsRegistrationModalOpen}
+                setIsAdmissionModalOpen={setIsAdmissionModalOpen}
+                isMenuOpen={isMenuOpen}
+                setIsMenuOpen={setIsMenuOpen}
               />
-              <div className="relative z-10 overflow-x-hidden">
-                <Suspense fallback={<PageLoader />}>
-                <AnimatePresence mode="wait">
-                  {view === 'home' && (
-                    <Home 
-                      setView={setView} 
-                      setSelectedCategory={setSelectedCategory} 
-                      setIsRegistrationModalOpen={setIsRegistrationModalOpen}
-                      setIsAdmissionModalOpen={setIsAdmissionModalOpen}
-                      setIsAddStoryModalOpen={setIsAddStoryModalOpen}
-                      dynamicCourses={dynamicCourses}
-                      dynamicExams={dynamicExams}
-                      stories={stories.slice(0, 2)}
-                      setSelectedExamName={setSelectedExamName}
-                      quickAccessList={quickAccessList}
-                    />
-                  )}
-                  {view === 'courses' && (
-                    <Courses 
-                      selectedCategory={selectedCategory}
-                      activeNavCategory={EXAM_CATEGORIES[0].id}
-                      dynamicCourses={dynamicCourses}
-                      dynamicExams={dynamicExams}
-                      onViewSyllabus={(id) => {
-                        setSelectedSyllabusId(id);
-                        if (id === 1) {
-                           setView('syllabus');
-                        } else {
-                           // Fallback for other categories if content not yet extracted
-                           alert("Full content for this category is coming soon. Only UPSC is currently ported.");
-                        }
-                      }}
-                      onViewMPSC={() => setView('courseDetailMPSC')}
-                      onViewPolice={() => setView('courseDetailPolice')}
-                      onViewMAHATET={() => setView('courseDetailMAHATET')}
-                      onViewDynamicExam={(examName) => {
-                        setSelectedExamName(examName);
-                        setView('dynamicExamDetail');
-                      }}
-                      onRegister={() => setIsRegistrationModalOpen(true)}
-                      onSelectCategory={setSelectedCategory}
-                    />
-                  )}
-                  {view === 'courseDetailPolice' && (
-                    <PoliceDetailsPage 
-                      onBack={() => setView('courses')}
-                      onRegister={() => setIsRegistrationModalOpen(true)}
-                      setView={setView}
-                      setIsRegistrationModalOpen={setIsRegistrationModalOpen}
-                      setIsAdmissionModalOpen={setIsAdmissionModalOpen}
-                    />
-                  )}
-                  {view === 'courseDetailMAHATET' && (
-                    <MAHATETDetailsPage 
-                      onBack={() => setView('courses')}
-                      onRegister={() => setIsRegistrationModalOpen(true)}
-                      setView={setView}
-                      setIsRegistrationModalOpen={setIsRegistrationModalOpen}
-                      setIsAdmissionModalOpen={setIsAdmissionModalOpen}
-                    />
-                  )}
-                  {view === 'syllabus' && (
-                    <SyllabusPortal 
-                      category={EXAM_CATEGORIES[0]} // UPSC as default or handle others
-                      onBack={() => setView('home')}
-                      onRegister={() => setIsRegistrationModalOpen(true)}
-                      setView={setView}
-                      setIsRegistrationModalOpen={setIsRegistrationModalOpen}
-                      setIsAdmissionModalOpen={setIsAdmissionModalOpen}
-                      isMenuOpen={isMenuOpen}
-                      setIsMenuOpen={setIsMenuOpen}
-                      view={view}
-                    />
-                  )}
-                  {view === 'courseDetailMPSC' && (
-                    <MPSCDetailsPage 
-                      onBack={() => setView('courses')}
-                      onRegister={() => setIsRegistrationModalOpen(true)}
-                      setView={setView}
-                      setIsRegistrationModalOpen={setIsRegistrationModalOpen}
-                      setIsAdmissionModalOpen={setIsAdmissionModalOpen}
-                    />
-                  )}
-                  {view === 'dynamicExamDetail' && (
-                    <DynamicExamDetailsPage 
-                      examName={selectedExamName}
-                      onBack={() => setView('courses')}
-                      onRegister={() => setIsRegistrationModalOpen(true)}
-                    />
-                  )}
-                  {view === 'about' && (
-                    <AboutUs />
-                  )}
-                  {view === 'successStories' && (
-                    <SuccessStoriesPage 
-                      stories={stories} 
-                      onBack={() => setView('home')} 
-                      onAddYours={() => setIsAddStoryModalOpen(true)}
-                    />
-                  )}
-                </AnimatePresence>
-                </Suspense>
 
-                <Footer 
-                  setView={setView}
-                  setSelectedCategory={setSelectedCategory}
-                  setIsRegistrationModalOpen={setIsRegistrationModalOpen}
-                  setSelectedExamName={setSelectedExamName}
+              <main className="pl-0 md:pl-52 relative min-h-screen">
+                <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.05]" 
+                  style={{
+                    backgroundImage: `linear-gradient(#1A1A1A 1px, transparent 1px), linear-gradient(90deg, #1A1A1A 1px, transparent 1px)`,
+                    backgroundSize: '40px 40px'
+                  }}
                 />
+                <div className="relative z-10 overflow-x-hidden">
+                  <Suspense fallback={<PageLoader />}>
+                    <AnimatePresence mode="wait">
+                      <Routes location={location} key={location.pathname}>
+                        <Route path="/" element={
+                          <>
+                            <SEO 
+                              title="BK Career Academy | UPSC, MPSC & Competitive Exam Coaching Nashik"
+                              description="Join Nashik's most trusted coaching academy for UPSC, MPSC, Banking, and SSC exams. Expert guidance and proven success."
+                              canonical="https://bkeducation.in/"
+                              jsonLd={{
+                                "@context": "https://schema.org",
+                                "@type": "EducationalOrganization",
+                                "name": "BK Career Academy",
+                                "url": "https://bkeducation.in",
+                                "logo": "https://bkeducation.in/logo.png",
+                                "description": "Nashik's leading coaching institute for UPSC, MPSC, and Banking exams.",
+                                "address": {
+                                  "@type": "PostalAddress",
+                                  "streetAddress": "2nd Floor, Gajanan Plaza, Gharpura Ghat Rd",
+                                  "addressLocality": "Nashik",
+                                  "addressRegion": "Maharashtra",
+                                  "postalCode": "422002",
+                                  "addressCountry": "IN"
+                                },
+                                "contactPoint": {
+                                  "@type": "ContactPoint",
+                                  "telephone": "+91-253-2313962",
+                                  "contactType": "admissions"
+                                }
+                              }}
+                            />
+                            <Home 
+                              setView={setView} 
+                              setSelectedCategory={setSelectedCategory} 
+                              setIsRegistrationModalOpen={setIsRegistrationModalOpen}
+                              setIsAdmissionModalOpen={setIsAdmissionModalOpen}
+                              setIsAddStoryModalOpen={setIsAddStoryModalOpen}
+                              dynamicCourses={dynamicCourses}
+                              dynamicExams={dynamicExams}
+                              stories={stories.slice(0, 2)}
+                              setSelectedExamName={setSelectedExamName}
+                              quickAccessList={quickAccessList}
+                            />
+                          </>
+                        } />
+                        <Route path="/courses" element={
+                          <>
+                            <SEO 
+                              title="Explore Courses | UPSC, MPSC, Banking, SSC | BK Academy"
+                              description="Discover our specialized coaching programs for civil services and competitive exams in Nashik."
+                              canonical="https://bkeducation.in/courses"
+                            />
+                            <Courses 
+                              selectedCategory={selectedCategory}
+                              activeNavCategory={EXAM_CATEGORIES[0].id}
+                              dynamicCourses={dynamicCourses}
+                              dynamicExams={dynamicExams}
+                              onViewSyllabus={(id) => {
+                                setSelectedSyllabusId(id);
+                                if (id === 1) navigate('/syllabus');
+                                else alert("Full content for this category is coming soon.");
+                              }}
+                              onViewMPSC={() => navigate('/mpsc')}
+                              onViewPolice={() => navigate('/police')}
+                              onViewMAHATET={() => navigate('/mahatet')}
+                              onViewDynamicExam={(examName) => {
+                                setSelectedExamName(examName);
+                                navigate(`/exam/${encodeURIComponent(examName)}`);
+                              }}
+                              onRegister={() => setIsRegistrationModalOpen(true)}
+                              onSelectCategory={setSelectedCategory}
+                            />
+                          </>
+                        } />
+                        <Route path="/syllabus" element={
+                          <>
+                            <SEO 
+                              title="Detailed UPSC Syllabus & Exam Pattern | BK Academy"
+                              description="Get the complete UPSC Civil Services syllabus, exam pattern, and preparation strategy."
+                              canonical="https://bkeducation.in/syllabus"
+                            />
+                            <SyllabusPortal 
+                              category={EXAM_CATEGORIES[0]}
+                              onBack={() => navigate('/')}
+                              onRegister={() => setIsRegistrationModalOpen(true)}
+                              setView={setView}
+                              setIsRegistrationModalOpen={setIsRegistrationModalOpen}
+                              setIsAdmissionModalOpen={setIsAdmissionModalOpen}
+                              isMenuOpen={isMenuOpen}
+                              setIsMenuOpen={setIsMenuOpen}
+                              view="syllabus"
+                            />
+                          </>
+                        } />
+                        <Route path="/about" element={
+                          <>
+                            <SEO 
+                              title="About Us | Our Vision & Success Stories | BK Academy"
+                              description="Learn about BK Career Academy's 15-year legacy of empowering students in Nashik."
+                              canonical="https://bkeducation.in/about"
+                            />
+                            <AboutUs />
+                          </>
+                        } />
+                        <Route path="/success-stories" element={
+                          <>
+                            <SEO 
+                              title="Success Stories | Real Results from Our Students"
+                              description="Read inspiring stories from our successful candidates who cracked UPSC, MPSC, and Banking exams."
+                              canonical="https://bkeducation.in/success-stories"
+                            />
+                            <SuccessStoriesPage 
+                              stories={stories} 
+                              onBack={() => navigate('/')} 
+                              onAddYours={() => setIsAddStoryModalOpen(true)}
+                            />
+                          </>
+                        } />
+                        <Route path="/mpsc" element={
+                          <>
+                            <SEO 
+                              title="MPSC Coaching in Nashik | Syllabus & Batch Details"
+                              description="Ace the MPSC Rajyaseva and Subordinate Services exams with our targeted coaching."
+                              canonical="https://bkeducation.in/mpsc"
+                            />
+                            <MPSCDetailsPage 
+                              onBack={() => navigate('/courses')}
+                              onRegister={() => setIsRegistrationModalOpen(true)}
+                              setView={setView}
+                              setIsRegistrationModalOpen={setIsRegistrationModalOpen}
+                              setIsAdmissionModalOpen={setIsAdmissionModalOpen}
+                            />
+                          </>
+                        } />
+                        <Route path="/police" element={
+                          <>
+                            <SEO 
+                              title="Police Bharti Training Nashik | Physical & Written Prep"
+                              description="Complete preparation for Maharashtra Police Recruitment in Nashik."
+                              canonical="https://bkeducation.in/police"
+                            />
+                            <PoliceDetailsPage 
+                              onBack={() => navigate('/courses')}
+                              onRegister={() => setIsRegistrationModalOpen(true)}
+                              setView={setView}
+                              setIsRegistrationModalOpen={setIsRegistrationModalOpen}
+                              setIsAdmissionModalOpen={setIsAdmissionModalOpen}
+                            />
+                          </>
+                        } />
+                        <Route path="/mahatet" element={
+                          <>
+                            <SEO 
+                              title="MAHA TET Exam Coaching | Teacher Eligibility Test Prep"
+                              description="Prepare for MAHA TET and CTET with Nashik's leading experts."
+                              canonical="https://bkeducation.in/mahatet"
+                            />
+                            <MAHATETDetailsPage 
+                              onBack={() => navigate('/courses')}
+                              onRegister={() => setIsRegistrationModalOpen(true)}
+                              setView={setView}
+                              setIsRegistrationModalOpen={setIsRegistrationModalOpen}
+                              setIsAdmissionModalOpen={setIsAdmissionModalOpen}
+                            />
+                          </>
+                        } />
+                        <Route path="/exam/:examName" element={
+                          <DynamicExamDetailsPage 
+                            examName={selectedExamName}
+                            onBack={() => navigate('/courses')}
+                            onRegister={() => setIsRegistrationModalOpen(true)}
+                          />
+                        } />
+                      </Routes>
+                    </AnimatePresence>
+                  </Suspense>
+
+                  <Footer 
+                    setView={setView}
+                    setSelectedCategory={setSelectedCategory}
+                    setIsRegistrationModalOpen={setIsRegistrationModalOpen}
+                    setSelectedExamName={setSelectedExamName}
+                  />
+                </div>
+              </main>
+
+              <RegistrationModal 
+                isOpen={isRegistrationModalOpen} 
+                onClose={() => setIsRegistrationModalOpen(false)} 
+              />
+
+              <AdmissionFormModal 
+                isOpen={isAdmissionModalOpen} 
+                onClose={() => setIsAdmissionModalOpen(false)} 
+              />
+
+              <AddStoryModal 
+                isOpen={isAddStoryModalOpen}
+                onClose={() => setIsAddStoryModalOpen(false)}
+                onAdd={handleAddStory}
+              />
+
+              <div onClickCapture={(e) => { if(isGuest) { e.stopPropagation(); setShowMandatoryLogin(true); } }}>
+                <ChatWidget />
               </div>
-            </main>
 
-            <RegistrationModal 
-              isOpen={isRegistrationModalOpen} 
-              onClose={() => setIsRegistrationModalOpen(false)} 
-            />
-
-            <AdmissionFormModal 
-              isOpen={isAdmissionModalOpen} 
-              onClose={() => setIsAdmissionModalOpen(false)} 
-            />
-
-            <AddStoryModal 
-              isOpen={isAddStoryModalOpen}
-              onClose={() => setIsAddStoryModalOpen(false)}
-              onAdd={handleAddStory}
-            />
-
-            <div onClickCapture={(e) => { if(isGuest) { e.stopPropagation(); setShowMandatoryLogin(true); } }}>
-              <ChatWidget />
-            </div>
-
-            <ScrollToTop />
-          </>
-        )}
+              <ScrollToTop />
+            </>
+          } />
+        </Routes>
       </div>
     </ErrorBoundary>
   );

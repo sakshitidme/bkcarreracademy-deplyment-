@@ -776,7 +776,7 @@ export default function AdminPortal({ onBack, onUpdate }: AdminPortalProps) {
     
     let logoBase64 = '';
     try {
-      const response = await fetch('/images/about_logos/bk.png');
+      const response = await fetch('/SanskarLogopage-BuCH7rsc.jpg');
       const blob = await response.blob();
       logoBase64 = await getBase64FromUrl(URL.createObjectURL(blob));
     } catch (e) {}
@@ -817,7 +817,7 @@ export default function AdminPortal({ onBack, onUpdate }: AdminPortalProps) {
             .form-title { text-align: center; font-size: 18px; font-weight: 900; text-transform: uppercase; margin: 20px 0; letter-spacing: 4px; color: #1a1a1a; }
             
             /* Visuals */
-            .visuals-row { display: flex; justify-content: flex-end; margin-bottom: 20px; }
+            .visuals-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
             .photo-frame { width: 32mm; height: 42mm; border: 2px solid #1a1a1a; background: #fff; overflow: hidden; position: relative; }
             .photo-img { width: 100%; height: 100%; object-fit: cover; }
             .label-small { font-size: 7px; font-weight: 900; text-transform: uppercase; color: #888; margin-top: 4px; }
@@ -850,17 +850,17 @@ export default function AdminPortal({ onBack, onUpdate }: AdminPortalProps) {
               <div class="logo-section">
                 ${logoBase64 ? `<img src="${logoBase64}" class="logo-img" />` : ''}
                 <div class="brand-text" style="text-align: center; flex-grow: 1;">
-                  <h1>बीके एज्युकेशनल अँड वेल्फेअर सोसायटी</h1>
-                  <h2>बीके ग्रुप ऑफ एज्युकेशन</h2>
-                  <p>BK EDUCATIONAL & WELFARE SOCIETY</p>
-                  <p>BK GROUP OF EDUCATION</p>
+                  <h1><span className="text-red-600">बीके</span> एज्युकेशनल अँड वेल्फेअर सोसायटी</h1>
+                  <h2><span className="text-red-600">बीके</span> ग्रुप ऑफ एज्युकेशन</h2>
+                  <p><span className="text-red-600">BK</span> EDUCATIONAL & WELFARE SOCIETY</p>
+                  <p><span className="text-red-600">BK</span> GROUP OF EDUCATION</p>
                   <div class="reg-no">Reg. No. : F-12121/Nashik/Maharashtra</div>
                 </div>
               </div>
               <div class="meta-info">
                 <div>
                   <div class="meta-label">Registration Number</div>
-                  <div class="meta-box">${a.registrationNo || 'LOADING...'}</div>
+                  <div class="meta-box">${a.registrationNo && a.registrationNo.startsWith('BK') ? `<span style="color: #ff0000;">BK</span>${a.registrationNo.substring(2)}` : (a.registrationNo || 'LOADING...')}</div>
                 </div>
                 <div>
                   <div class="meta-label">Form Number</div>
@@ -871,6 +871,13 @@ export default function AdminPortal({ onBack, onUpdate }: AdminPortalProps) {
             </div>
 
             <div class="visuals-row">
+              <div style="flex-grow: 1; margin-bottom: 10px;">
+                <div class="form-title" style="text-align: left; margin: 0; font-size: 22px; border-bottom: 2px solid #1a1a1a; display: inline-block; padding-right: 40px;">Student Admission Record</div>
+                <div style="margin-top: 8px; font-size: 9px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
+                  Official Academy Copy - Session 2026-27<br/>
+                  Record Fetched from BK Admin Portal
+                </div>
+              </div>
               <div style="display: flex; flex-direction: column; align-items: center;">
                 <div class="photo-frame">
                   ${photoBase64 ? `<img src="${photoBase64}" class="photo-img" />` : '<div style="height:100%; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:8px;">PHOTO</div>'}
@@ -878,8 +885,6 @@ export default function AdminPortal({ onBack, onUpdate }: AdminPortalProps) {
                 <div class="label-small">Passport Photo</div>
               </div>
             </div>
-
-            <div class="form-title">Student Admission Record</div>
 
             <div class="section">
               <div class="section-title">Selected Programs</div>
@@ -1024,7 +1029,7 @@ export default function AdminPortal({ onBack, onUpdate }: AdminPortalProps) {
             {isMobileMenuOpen ? <X size={20} /> : <Layout size={20} />}
           </button>
           <div className="w-10 h-10 md:w-12 md:h-12 bg-brand border-4 border-ink flex items-center justify-center">
-             <span className="font-display font-black text-lg md:text-xl text-ink">BK</span>
+             <span className="font-display font-black text-lg md:text-xl text-red-600">BK</span>
           </div>
           <h1 className="text-sm md:text-xl font-display font-black uppercase tracking-tighter">Control Panel</h1>
         </div>
@@ -1352,7 +1357,13 @@ export default function AdminPortal({ onBack, onUpdate }: AdminPortalProps) {
                                    }}
                                  />
                                </td>
-                               <td className="p-4 font-mono text-[10px] text-ink/60">{a.registrationNo || 'N/A'}</td>
+                               <td className="p-4 font-mono text-[10px] text-ink/60">
+                                 {a.registrationNo && a.registrationNo.startsWith('BK') ? (
+                                   <><span className="text-red-600">BK</span>{a.registrationNo.substring(2)}</>
+                                 ) : (
+                                   a.registrationNo || 'N/A'
+                                 )}
+                               </td>
                                 <td className="p-4 font-mono text-[10px] text-ink/60">{a.formNo || 'N/A'}</td>
                                 <td className="p-4">
                                  <div className="text-brand font-black">{a.firstNameLocal || a.firstName} {a.surnameLocal || a.surname}</div>
