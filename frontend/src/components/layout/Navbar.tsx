@@ -93,9 +93,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           }}
           className="mb-16 cursor-pointer group relative flex flex-col items-center"
         >
-          
           <BrandLogo className="w-12 h-12 md:w-16 md:h-16 group-hover:rotate-6 transition-transform" />
-          
+
           <div className="mt-6 flex flex-col items-center">
             <div className="flex items-center gap-1.5 h-6">
               <span className="text-[18px] font-black text-red-600 leading-none">BK</span>

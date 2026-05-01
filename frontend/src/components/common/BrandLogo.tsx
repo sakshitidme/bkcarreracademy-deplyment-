@@ -6,7 +6,7 @@ export const BrandLogo = ({ className = "", onDoubleClick }: { className?: strin
     className={`relative flex items-center justify-center ${className} transition-all duration-200 cursor-pointer overflow-hidden border-2 border-ink shadow-[4px_4px_0_0_#1A1A1A] bg-white`}
   >
     <img 
-      src="/logo.png" 
+      src="/bk.png" 
       alt="BK Career Academy Logo" 
       className="w-full h-full object-contain"
     />
