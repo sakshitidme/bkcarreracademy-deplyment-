@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Clock, Calendar, GraduationCap, ArrowLeft, Target, ShieldCheck, Sparkles } from 'lucide-react';
-import BrandLogo from '../components/common/BrandLogo';
+import { Clock, Calendar, GraduationCap, ArrowLeft, Target, ShieldCheck, Sparkles, Zap, ArrowRight, BookOpen, Clock4 } from 'lucide-react';
 import SEO from '../components/common/SEO';
 
 interface DynamicExamDetailsPageProps {
   examName?: string;
   onBack: () => void;
   onRegister: () => void;
+  setIsRegistrationModalOpen: (open: boolean) => void;
+  setIsAdmissionModalOpen: (open: boolean) => void;
 }
 
 // ── Smart Content Renderer ──────────────────────────────────────────────
@@ -26,11 +27,11 @@ const SmartContentRenderer: React.FC<{ content: string }> = ({ content }) => {
           if (parts.length < 2) return null;
           const [time, activity] = parts.map(s => s.trim());
           return (
-            <div key={i} className="flex items-center gap-6 p-6 bg-white rounded-3xl border border-black/5 shadow-sm group hover:bg-brand transition-all">
-               <div className="px-4 py-2 bg-brand/10 group-hover:bg-white rounded-xl text-brand group-hover:text-ink font-mono font-black text-xs">
+            <div key={i} className="flex items-center gap-6 p-6 bg-white rounded-2xl border border-gray-100 hover:border-primary/30 transition-all group">
+               <div className="px-4 py-2 bg-primary/10 rounded-xl text-primary font-bold text-[10px] uppercase tracking-widest">
                   {time}
                </div>
-               <div className="font-display font-bold text-lg uppercase tracking-tight group-hover:text-ink">{activity}</div>
+               <div className="font-display font-black text-dark uppercase tracking-tight text-sm">{activity}</div>
             </div>
           );
         })}
@@ -43,11 +44,11 @@ const SmartContentRenderer: React.FC<{ content: string }> = ({ content }) => {
     return (
       <div className="space-y-8">
         {phases.map((p, i) => (
-          <div key={i} className="relative pl-12 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-brand/20">
-            <div className="absolute left-[-10px] top-0 w-6 h-6 bg-brand rounded-full border-4 border-white shadow-lg" />
-            <div className="bg-brand/5 p-8 rounded-[2.5rem] border border-brand/10">
-               <h4 className="text-brand font-mono font-black uppercase tracking-[0.3em] text-xs mb-4">Phase 0{i+1} Deployment</h4>
-               <div className="text-ink font-body leading-relaxed whitespace-pre-wrap">{p.trim()}</div>
+          <div key={i} className="relative pl-8 border-l-2 border-primary/20">
+            <div className="absolute left-[-9px] top-0 w-4 h-4 bg-primary rounded-full ring-4 ring-white" />
+            <div className="bg-gray-50/50 p-8 rounded-3xl border border-gray-100">
+               <h4 className="text-primary font-bold uppercase tracking-widest text-[10px] mb-4">Phase {i+1} Roadmap</h4>
+               <div className="text-body font-body leading-relaxed whitespace-pre-wrap text-sm">{p.trim()}</div>
             </div>
           </div>
         ))}
@@ -60,18 +61,18 @@ const SmartContentRenderer: React.FC<{ content: string }> = ({ content }) => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {items.map((item, i) => (
-          <div key={i} className="flex items-center gap-4 p-5 bg-white border border-black/5 rounded-[1.5rem] hover:border-brand transition-all group">
-             <div className="w-6 h-6 rounded-lg border-2 border-brand/30 flex items-center justify-center group-hover:bg-brand">
-                <ShieldCheck size={14} className="text-transparent group-hover:text-ink" />
+          <div key={i} className="flex items-center gap-4 p-5 bg-white border border-gray-100 rounded-2xl hover:border-primary/50 transition-all group">
+             <div className="w-5 h-5 rounded-full border-2 border-primary/30 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-colors">
+                <ShieldCheck size={12} className="text-white opacity-0 group-hover:opacity-100" />
              </div>
-             <span className="font-display font-bold uppercase text-xs tracking-wide">{item.replace(/\[\s?\]|-/, '').trim()}</span>
+             <span className="font-display font-black uppercase text-[10px] tracking-widest text-dark">{item.replace(/\[\s?\]|-/, '').trim()}</span>
           </div>
         ))}
       </div>
     );
   }
 
-  return <div className="whitespace-pre-wrap">{content}</div>;
+  return <div className="whitespace-pre-wrap font-body text-body leading-relaxed">{content}</div>;
 };
 
 // ── Premium Countdown Widget ───────────────────────────────────────────────
@@ -101,26 +102,23 @@ const CountdownTimer: React.FC<{ examDate: string }> = ({ examDate }) => {
   if (timeLeft.passed) return null;
 
   return (
-    <div className="mb-20 p-1 bg-gradient-to-br from-brand/20 via-transparent to-brand/10 rounded-[3rem] shadow-2xl overflow-hidden backdrop-blur-xl border border-white/20">
-      <div className="bg-[#0A0A0A]/90 p-8 md:p-12 rounded-[2.9rem] relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-brand/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-brand/5 rounded-full blur-[60px] translate-y-1/2 -translate-x-1/2" />
+    <div className="mb-20 bg-dark rounded-[3rem] p-12 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
         
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12 relative z-10">
           <div className="flex items-center gap-6">
-            <div className="w-16 h-16 rounded-2xl bg-brand/10 border border-brand/30 flex items-center justify-center shadow-[0_0_30px_rgba(247,147,26,0.2)]">
-              <Clock className="text-brand animate-pulse" size={32} />
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <Clock4 className="text-primary animate-pulse" size={32} />
             </div>
             <div>
-              <h4 className="text-white text-3xl font-display font-black tracking-tight uppercase">Strategic <span className="text-brand">Deadline</span></h4>
-              <p className="text-white/40 font-mono text-[10px] uppercase tracking-[0.4em] mt-1">Operational Window Closing</p>
+              <h4 className="text-white text-3xl font-display font-black tracking-tight uppercase">Strategic <span className="text-primary">Deadline</span></h4>
+              <p className="text-white/40 font-bold text-[10px] uppercase tracking-[0.4em] mt-1">Countdown to Excellence</p>
             </div>
           </div>
           <div className="px-6 py-3 bg-white/5 border border-white/10 rounded-full flex items-center gap-3 backdrop-blur-md">
-            <Calendar size={18} className="text-brand/60" />
-            <span className="text-white/80 font-display font-bold text-sm">
+            <Calendar size={18} className="text-primary" />
+            <span className="text-white/80 font-display font-black uppercase text-xs tracking-widest">
               {new Date(examDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
-              {` | ${new Date(examDate).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`}
             </span>
           </div>
         </div>
@@ -133,16 +131,15 @@ const CountdownTimer: React.FC<{ examDate: string }> = ({ examDate }) => {
             { l: 'Sec', v: timeLeft.seconds }
           ].map(b => (
             <div key={b.l} className="group">
-              <div className="bg-white/5 border border-white/10 p-6 md:p-8 rounded-[2rem] text-center backdrop-blur-md transition-all hover:bg-brand/10 hover:border-brand/30">
-                <span className="text-5xl md:text-7xl font-display font-black text-white block mb-2 tracking-tighter tabular-nums drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+              <div className="bg-white/5 border border-white/10 p-6 md:p-8 rounded-3xl text-center backdrop-blur-md transition-all hover:bg-primary/10 hover:border-primary/30">
+                <span className="text-5xl md:text-7xl font-display font-black text-white block mb-2 tracking-tighter tabular-nums">
                   {String(b.v).padStart(2, '0')}
                 </span>
-                <span className="text-[10px] font-mono font-black uppercase tracking-[0.3em] text-brand/60 group-hover:text-brand transition-colors">{b.l}</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary/60 group-hover:text-primary transition-colors">{b.l}</span>
               </div>
             </div>
           ))}
         </div>
-      </div>
     </div>
   );
 };
@@ -150,11 +147,12 @@ const CountdownTimer: React.FC<{ examDate: string }> = ({ examDate }) => {
 export const DynamicExamDetailsPage: React.FC<DynamicExamDetailsPageProps> = ({
   examName: propsExamName,
   onBack,
-  onRegister
+  onRegister,
+  setIsRegistrationModalOpen,
+  setIsAdmissionModalOpen
 }) => {
   const { examName: urlExamName } = useParams();
   const examName = propsExamName || urlExamName || '';
-  const navigate = useNavigate();
   
   const [content, setContent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -204,104 +202,130 @@ export const DynamicExamDetailsPage: React.FC<DynamicExamDetailsPageProps> = ({
   }, [examName]);
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-[#F8F9FA] relative">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen bg-bg relative">
       <SEO 
         title={`${examName} Coaching & Exam Details | BK Academy`}
         description={`Get complete details about ${examName} exam pattern, syllabus, and coaching at BK Career Academy Nashik.`}
         canonical={`https://bkeducation.in/exam/${encodeURIComponent(examName)}`}
       />
       
-      <nav className="fixed top-14 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-3rem)] max-w-7xl">
-        <div className="bg-white/80 backdrop-blur-2xl border border-white/40 h-20 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] px-8 flex items-center justify-between">
-          <div className="flex items-center gap-4 cursor-pointer" onClick={onBack}>
-            <BrandLogo className="w-10 h-10" />
-            <div className="hidden sm:flex flex-col mt-1">
-              <span className="text-xl font-display font-black uppercase text-ink leading-none">{examName}</span>
-              <span className="text-[10px] font-mono text-brand font-bold uppercase tracking-widest mt-1">Institutional</span>
+      {/* Premium Navbar */}
+      <nav className="fixed top-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-gray-100 h-20">
+        <div className="section-container h-full flex items-center justify-between">
+          <div 
+            className="flex items-center gap-3 cursor-pointer group"
+            onClick={onBack}
+          >
+            <div className="w-10 h-10 bg-dark rounded-xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+              <GraduationCap size={20} />
+            </div>
+            <div>
+              <span className="text-xl font-display font-black text-dark block leading-none uppercase">{examName}</span>
+              <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Master Blueprint</span>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-             <button onClick={onBack} className="p-3 rounded-2xl bg-background border border-ink/5 text-ink hover:bg-brand hover:text-ink transition-all"><ArrowLeft size={20} /></button>
+          
+          <div className="hidden md:flex items-center gap-6">
+            <button 
+              onClick={() => setIsRegistrationModalOpen(true)}
+              className="btn-primary-new px-6 py-2.5 text-[10px]"
+            >
+              Enroll Now
+            </button>
           </div>
         </div>
       </nav>
 
-      <header className="pt-56 pb-32 px-8 bg-white relative overflow-hidden text-center">
-        <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="inline-flex items-center gap-2 px-4 py-1.5 bg-brand/10 border border-brand/20 rounded-full mb-8">
-          <Sparkles size={14} className="text-brand" />
-          <span className="text-[10px] font-mono font-black uppercase tracking-widest text-brand">Exclusive Strategic Content</span>
-        </motion.div>
-        <h1 className="text-6xl md:text-9xl font-display font-black text-ink uppercase tracking-tighter leading-[0.8] mb-10">
-          {examName} <br/> <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand/60">Blueprints</span>
-        </h1>
-        <p className="text-muted text-xl md:text-2xl font-body max-w-3xl mx-auto leading-relaxed">
-          The ultimate institutional framework for {examName} candidates.
-        </p>
+      <header className="pt-48 pb-24 bg-white relative overflow-hidden">
+        <div className="section-container">
+          <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 rounded-full mb-8">
+            <Sparkles size={14} className="text-primary" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-primary">Strategic Framework 2026</span>
+          </motion.div>
+          <h1 className="text-6xl md:text-8xl font-display font-black text-dark uppercase tracking-tight leading-none mb-10">
+            {examName} <br/> <span className="text-primary text-glow">Blueprints</span>
+          </h1>
+          <p className="text-body text-xl font-body max-w-3xl leading-relaxed">
+            The ultimate institutional framework for {examName} candidates. Designed for high-performance outcomes.
+          </p>
+        </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-8 py-12 pb-40">
-        {loading ? (
-           <div className="py-40 text-center flex flex-col items-center gap-6">
-              <div className="w-16 h-16 border-4 border-brand border-t-transparent rounded-full animate-spin" />
-              <span className="font-mono text-xs uppercase tracking-widest text-muted">Syncing Protocols...</span>
-           </div>
-        ) : content ? (
-          <div className="grid grid-cols-1 gap-16">
-            {content.examDate && <CountdownTimer examDate={content.examDate} />}
-            {content.image && (
-              <div className="w-full h-[500px] md:h-[700px] overflow-hidden rounded-[3rem] shadow-2xl relative">
-                 <img src={content.image} alt={`${examName} Syllabus and Exam Pattern Details`} className="w-full h-full object-cover" />
-                 <div className="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent" />
-                 <div className="absolute bottom-12 left-12">
-                    <div className="text-brand text-xs font-mono font-black uppercase tracking-[0.5em] mb-4">Official Visual Record</div>
-                    <h2 className="text-white text-5xl font-display font-black uppercase tracking-tight">{examName} Orientation</h2>
-                 </div>
-              </div>
-            )}
-            <div className="grid grid-cols-1 gap-12 mt-12">
-              {content.dynamicSections?.map((sec: any, idx: number) => (
-                <motion.section 
-                  key={idx}
-                  initial={{ y: 30, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  viewport={{ once: true }}
-                  className="bg-white border-4 border-ink p-10 md:p-16 shadow-[16px_16px_0_0_#F7931A] relative overflow-hidden"
-                >
-                  <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none">
-                    <GraduationCap size={400} />
-                  </div>
-                  <div className="relative z-10">
-                    <div className="flex items-center gap-6 mb-12 border-b-4 border-ink pb-8">
-                      <div className="w-16 h-16 bg-brand border-4 border-ink flex items-center justify-center shadow-[6px_6px_0_0_#1A1A1A] shrink-0">
-                         {idx % 2 === 0 ? <Target size={32} strokeWidth={3} /> : <ShieldCheck size={32} strokeWidth={3} />}
+      <main className="py-24">
+        <div className="section-container">
+          {loading ? (
+             <div className="py-40 text-center flex flex-col items-center gap-6">
+                <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+                <span className="font-bold text-[10px] uppercase tracking-widest text-muted">Syncing Protocols...</span>
+             </div>
+          ) : content ? (
+            <div className="space-y-24">
+              {content.examDate && <CountdownTimer examDate={content.examDate} />}
+              
+              {content.image && (
+                <div className="w-full h-[600px] overflow-hidden rounded-[3.5rem] shadow-2xl relative group">
+                   <img src={content.image} alt={examName} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
+                   <div className="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/20 to-transparent" />
+                   <div className="absolute bottom-12 left-12">
+                      <div className="text-primary text-[10px] font-bold uppercase tracking-[0.5em] mb-4">Official Visual Record</div>
+                      <h2 className="text-white text-4xl font-display font-black uppercase tracking-tight">{examName} Orientation</h2>
+                   </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 gap-12">
+                {content.dynamicSections?.map((sec: any, idx: number) => (
+                  <motion.section 
+                    key={idx}
+                    initial={{ y: 30, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    viewport={{ once: true }}
+                    className="bg-white rounded-[3rem] p-12 md:p-20 border border-gray-100 hover:shadow-2xl hover:shadow-primary/5 transition-all group"
+                  >
+                    <div className="flex items-center gap-6 mb-12 border-b border-gray-100 pb-8">
+                      <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shrink-0">
+                         {idx % 2 === 0 ? <Target size={28} /> : <Zap size={28} />}
                       </div>
                       <div>
-                        <h3 className="text-4xl md:text-5xl font-display font-black text-ink uppercase tracking-tight leading-none">{sec.title}</h3>
-                        <div className="mt-2 text-[10px] font-mono text-brand font-black uppercase tracking-[0.4em]">Strategic Module 0{idx + 1}</div>
+                        <h3 className="text-3xl md:text-5xl font-display font-black text-dark uppercase tracking-tight leading-none">{sec.title}</h3>
+                        <div className="mt-2 text-[10px] font-bold text-primary uppercase tracking-[0.4em]">Strategic Module 0{idx + 1}</div>
                       </div>
                     </div>
-                    <div className="prose prose-xl max-w-none">
+                    <div className="prose-container">
                        <SmartContentRenderer content={sec.content} />
                     </div>
-                  </div>
-                </motion.section>
-              ))}
+                  </motion.section>
+                ))}
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="text-center py-40 bg-white rounded-[4rem] shadow-xl">
-            <h3 className="text-4xl font-display font-black text-ink uppercase mb-6 italic">Protocol Not Active</h3>
-            <button onClick={onRegister} className="px-16 py-6 bg-brand text-ink rounded-3xl font-display font-black text-2xl uppercase">Inquire Now</button>
-          </div>
-        )}
+          ) : (
+            <div className="text-center py-40 bg-white rounded-[4rem] border border-gray-100">
+              <h3 className="text-4xl font-display font-black text-dark uppercase mb-8">Protocol Not Active</h3>
+              <button onClick={onRegister} className="btn-primary-new px-12 py-5 text-xl">
+                Request Briefing
+              </button>
+            </div>
+          )}
+        </div>
       </main>
 
-      <section className="bg-ink py-40 px-8 relative overflow-hidden border-t-[32px] border-white text-center">
-        <GraduationCap size={80} className="text-brand mx-auto mb-12 opacity-50" />
-        <h2 className="text-6xl md:text-9xl font-display font-black text-white uppercase mb-16 leading-[0.8]">
-          Initiate Your <br/> <span className="text-brand">Training</span> Phase
-        </h2>
-        <button onClick={onRegister} className="px-16 py-8 bg-brand text-ink rounded-[2.5rem] font-display font-black text-2xl uppercase shadow-2xl">Join Academy</button>
+      <section className="bg-dark py-32 text-center relative overflow-hidden">
+        <div className="section-container relative z-10">
+          <h2 className="text-5xl md:text-7xl font-display font-black text-white uppercase mb-12 leading-tight">
+            Initiate Your <br/> <span className="text-primary text-glow">Training</span> Phase
+          </h2>
+          <div className="flex flex-col sm:flex-row justify-center gap-6">
+            <button onClick={onRegister} className="btn-primary-new px-12 py-5 text-xl group">
+               Join Academy <ArrowRight className="inline-block ml-2 group-hover:translate-x-2 transition-transform" />
+            </button>
+            <button 
+              onClick={() => setIsAdmissionModalOpen(true)}
+              className="btn-outline-new border-white/20 text-white hover:bg-white hover:text-dark px-12 py-5 text-xl"
+            >
+              Consult Expert
+            </button>
+          </div>
+        </div>
       </section>
     </motion.div>
   );

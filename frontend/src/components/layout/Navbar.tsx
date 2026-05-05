@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Globe, Search, Book } from 'lucide-react';
+import { Menu, X, Home, Circle, Hexagon, Diamond, Search } from 'lucide-react';
 import { BrandLogo } from '../common/BrandLogo';
 
 interface NavbarProps {
@@ -16,7 +16,6 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
-  view,
   setView,
   setSelectedCategory,
   setSelectedSyllabusId,
@@ -28,12 +27,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   const location = useLocation();
 
   const tickerItems = [
-    { text: "Breaking: 2026 Batch Admissions Open", action: () => setIsAdmissionModalOpen(true), highlight: false },
+    { text: "Admissions open for 2026 Batch", action: () => setIsAdmissionModalOpen(true), highlight: false },
     { text: "UPSC Prelims Countdown Active", action: () => { setView('syllabus'); setSelectedSyllabusId(1); }, highlight: false },
-    { text: "UPSC CSE 2026", action: () => { setView('courses'); setSelectedCategory(1); }, highlight: true },
-    { text: "10K+ Careers Defined", action: () => setView('about'), highlight: false },
-    { text: "All Group 'A' Profiles Updated", action: () => setView('courses'), highlight: false },
-    { text: "Jay Hind", action: () => setView('home'), highlight: true }
+    { text: "New UPSC CSE 2026 Batches", action: () => { setView('courses'); setSelectedCategory(1); }, highlight: true },
+    { text: "Helping 10,000+ students succeed", action: () => setView('about'), highlight: false },
+    { text: "Success is a choice, make it today", action: () => setView('home'), highlight: true }
   ];
 
   return (
@@ -41,9 +39,9 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Nav Toggle */}
       <button 
         onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className="fixed top-2.5 left-4 z-[120] md:hidden w-9 h-9 border-2 border-brand bg-ink flex items-center justify-center shadow-[2px_2px_0_0_#F7931A] focus:outline-none"
+        className="fixed top-3 left-4 z-[120] md:hidden w-10 h-10 rounded-full bg-dark text-primary flex items-center justify-center shadow-lg focus:outline-none"
       >
-        {isMenuOpen ? <X size={20} className="text-brand" /> : <Menu size={20} className="text-brand" />}
+        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
       {/* Mobile Menu Backdrop */}
@@ -54,29 +52,24 @@ export const Navbar: React.FC<NavbarProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsMenuOpen(false)}
-            className="fixed inset-0 bg-ink/60 backdrop-blur-sm z-[105] md:hidden"
+            className="fixed inset-0 bg-dark/40 backdrop-blur-md z-[105] md:hidden"
           />
         )}
       </AnimatePresence>
 
       {/* Ticker */}
-      <div className="fixed top-0 left-0 right-0 z-[60] bg-ink h-14 flex items-center overflow-hidden border-b-2 border-brand/20">
-        <div className="flex whitespace-nowrap animate-[marquee-scroll_120s_linear_infinite]">
+      <div className="fixed top-0 left-0 right-0 z-[60] bg-dark h-12 flex items-center overflow-hidden">
+        <div className="flex whitespace-nowrap animate-[marquee-scroll_100s_linear_infinite]">
           {[...Array(10)].map((_, i) => (
-            <div key={i} className="flex items-center gap-8 px-8 group">
+            <div key={i} className="flex items-center gap-12 px-12">
               {tickerItems.map((item, idx) => (
-                <React.Fragment key={idx}>
-                  <div className="flex items-center gap-4">
-                    <span className="w-2 h-2 rounded-full bg-brand"></span>
-                    <button 
-                      onClick={item.action}
-                      className={`font-mono text-xs uppercase tracking-[0.3em] transition-all duration-300 hover:scale-110 hover:brightness-150 cursor-pointer outline-none ${item.highlight ? 'text-brand' : 'text-brand/80 hover:text-brand underline-offset-4 hover:underline'}`}
-                    >
-                      {item.text}
-                    </button>
-                  </div>
-                  {idx < tickerItems.length - 1 && <span className="opacity-30 text-brand">|</span>}
-                </React.Fragment>
+                <button 
+                  key={idx}
+                  onClick={item.action}
+                  className={`text-[10px] md:text-xs font-semibold uppercase tracking-[0.2em] transition-all duration-300 hover:text-primary ${item.highlight ? 'text-primary' : 'text-gray-400'}`}
+                >
+                  {item.text}
+                </button>
               ))}
             </div>
           ))}
@@ -84,37 +77,35 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Navigation Sidebar */}
-      <aside className={`fixed top-14 left-0 bottom-0 w-64 md:w-52 bg-white border-r-4 border-ink z-[110] flex flex-col items-center py-12 transition-transform duration-500 overflow-y-auto ${isMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+      {/* Navigation Sidebar */}
+      <aside className={`fixed top-12 left-0 bottom-0 w-72 min-[700px]:w-64 bg-white z-[110] flex flex-col items-center py-6 transition-transform duration-500 shadow-xl overflow-y-auto scrollbar-hide ${isMenuOpen ? 'translate-x-0' : '-translate-x-full min-[700px]:translate-x-0'}`}>
         <Link 
           to="/"
           onClick={() => { 
             setSelectedCategory(null); 
             setIsMenuOpen(false); 
           }}
-          className="mb-16 cursor-pointer group relative flex flex-col items-center"
+          className="mb-6 flex flex-col items-center group px-8"
         >
-          <BrandLogo className="w-12 h-12 md:w-16 md:h-16 group-hover:rotate-6 transition-transform" />
+          <div className="relative p-2 rounded-2xl bg-gray-50 group-hover:bg-primary/10 transition-colors">
+            <BrandLogo className="w-12 h-12 transition-transform duration-500 group-hover:scale-110" />
+          </div>
 
-          <div className="mt-6 flex flex-col items-center">
-            <div className="flex items-center gap-1.5 h-6">
-              <span className="text-[18px] font-black text-red-600 leading-none">BK</span>
-              <div className="relative">
-                <span className="text-[18px] font-black text-ink leading-none uppercase tracking-tight">Career</span>
-                <div className="absolute -bottom-1 left-0 right-0 h-[2px] bg-ink"></div>
-              </div>
+          <div className="mt-3 text-center">
+            <div className="flex items-center justify-center gap-1">
+              <span className="text-xl font-black text-red-600 font-display">BK</span>
+              <span className="text-xl font-black text-dark font-display">CAREER</span>
             </div>
-            <div className="mt-1.5">
-              <span className="text-[22px] font-black text-ink leading-none uppercase tracking-tighter">Academy</span>
-            </div>
+            <span className="text-xs font-bold text-gray-400 font-display tracking-[0.3em] uppercase block -mt-1">Academy</span>
           </div>
         </Link>
 
-        <nav className="flex-grow w-full px-6 flex flex-col justify-center gap-2">
+        <nav className="flex-grow w-full px-8 flex flex-col gap-1">
           {[
-            { id: 'home', label: 'Home', icon: '◰', path: '/' },
-            { id: 'about', label: 'About Us', icon: '◎', path: '/about' },
-            { id: 'courses', label: "Explore Govt\nExam", icon: '⌬', path: '/courses' },
-            { id: 'syllabus', label: 'Book', icon: '◈', path: '/syllabus' }
+            { id: 'home', label: 'HOME', icon: <Home size={18} />, path: '/' },
+            { id: 'about', label: 'ABOUT US', icon: <Circle size={18} />, path: '/about' },
+            { id: 'courses', label: 'EXPLORE GOVT EXAM', icon: <Hexagon size={18} />, path: '/courses' },
+            { id: 'syllabus', label: 'BOOK', icon: <Diamond size={18} />, path: '/syllabus' },
           ].map((item) => (
             <Link
               key={item.id}
@@ -125,36 +116,42 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }
                 setIsMenuOpen(false); 
               }}
-              className={`sidebar-link ${location.pathname === item.path ? 'active' : ''}`}
+              className={`flex flex-col items-center gap-1 py-3 transition-all duration-300 group ${location.pathname === item.path ? 'text-dark' : 'text-gray-400 hover:text-dark'}`}
             >
-              <span className="text-lg opacity-40 font-mono">{item.icon}</span>
-              <span>{item.label}</span>
+              <span className={`${location.pathname === item.path ? 'text-primary scale-110' : 'text-gray-200 group-hover:text-primary'} transition-all duration-300`}>{item.icon}</span>
+              <span className="font-display font-bold text-[9px] tracking-[0.2em]">{item.label}</span>
+              {location.pathname === item.path && (
+                <motion.div 
+                  layoutId="nav-indicator"
+                  className="absolute left-0 w-1 h-10 bg-primary rounded-r-full shadow-[0_0_15px_rgba(245,166,35,0.5)]"
+                />
+              )}
             </Link>
           ))}
           
-          <div className="mt-10 pt-8 border-t-4 border-ink flex flex-col gap-4">
+          <div className="mt-4 pt-4 border-t-2 border-dark flex flex-col gap-3">
             <button 
               onClick={() => setIsRegistrationModalOpen(true)}
-              className="group relative bg-brand border-4 border-ink p-4 shadow-[4px_4px_0_0_#1A1A1A] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all"
+              className="w-full bg-primary text-dark font-display font-black uppercase text-[10px] tracking-widest px-4 py-4 border-[3px] border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all active:scale-95 flex items-center justify-center gap-2"
             >
-              <div className="flex items-center justify-center gap-3">
-                <Search size={16} className="text-ink group-hover:rotate-90 transition-transform" />
-                <span className="font-display font-black uppercase text-xs tracking-widest text-ink">Inquiry</span>
-              </div>
+              <Search size={16} /> INQUIRY
             </button>
 
             <button 
               onClick={() => setIsAdmissionModalOpen(true)}
-              className="group relative bg-brand border-4 border-ink p-4 shadow-[4px_4px_0_0_#1A1A1A] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all"
+              className="w-full bg-[#E89C10] text-dark font-display font-black uppercase text-[10px] tracking-widest px-4 py-4 border-[3px] border-dark shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all active:scale-95"
             >
-              <div className="flex items-center justify-center gap-3">
-                <Globe size={16} className="text-ink group-hover:animate-spin" />
-                <span className="font-display font-black uppercase text-xs tracking-widest text-ink">Admission</span>
-              </div>
+              ADMISSION
             </button>
           </div>
         </nav>
 
+
+        <div className="px-8 mt-auto pt-8 w-full">
+          <p className="text-[10px] text-gray-400 font-medium text-center leading-relaxed">
+            Leading Coaching Institute for UPSC & Competitive Exams
+          </p>
+        </div>
       </aside>
     </>
   );

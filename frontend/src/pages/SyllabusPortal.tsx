@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
-  Landmark, 
-  Star, 
-  Award,
-  ArrowRight,
+  ArrowLeft,
   ChevronDown,
   Book,
-  Download
+  Download,
+  Search,
+  Filter,
+  Library,
+  ChevronRight,
+  ArrowRight
 } from 'lucide-react';
-import { BrandLogo } from '../components/common/BrandLogo';
 
 interface SyllabusPortalProps {
   category: any;
@@ -37,27 +38,25 @@ export const SyllabusPortal: React.FC<SyllabusPortalProps> = ({
   setIsAdmissionModalOpen
 }) => {
   const [activeModule, setActiveModule] = useState<string | null>(initialModule);
-  const [activeContent, setActiveContent] = useState<number | null>(null);
   const [books, setBooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const categories = [
     'UPSC', 'MPSC', 'SSC', 'Banking', 'Railway', 'Defence', 
     'Teaching', 'Insurance', 'Engineering', 'Law', 'Medical', 'FCI', 'Question Papers'
   ];
 
-  React.useEffect(() => {
+  useEffect(() => {
     setLoading(true);
-    // If Question Papers is active, we fetch all to filter locally for the prefix
     const isQP = activeModule === 'Question Papers';
-    const url = (activeModule && !isQP) ? `/api/books?category=${activeModule}` : '/api/books';
+    const url = (activeModule && !isQP && activeModule !== 'All') ? `/api/books?category=${activeModule}` : '/api/books';
     
     fetch(url)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
           if (isQP) {
-            // Filter books that have "Question Paper" in their category string
             const filtered = data.items.filter((b: any) => 
               b.category && b.category.toLowerCase().includes('question paper')
             );
@@ -71,153 +70,200 @@ export const SyllabusPortal: React.FC<SyllabusPortalProps> = ({
       .catch(() => setLoading(false));
   }, [activeModule]);
 
-  const syllabusItems = categories.map(cat => ({ 
-    name: cat, 
-    icon: Book 
-  }));
+  const filteredBooks = books.filter(book => 
+    book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (book.category && book.category.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
   return (
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="min-h-screen bg-void"
+      className="bg-bg min-h-screen"
     >
-      {/* Portal Navbar */}
-      <nav className="sticky top-10 z-50 bg-white border-b-4 border-ink px-8 py-6 mb-16">
-        <div className="max-w-[1800px] mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-4 cursor-pointer" onClick={onBack}>
-            <BrandLogo className="w-12 h-12" />
-            <div className="flex flex-col mt-1">
-              <div className="text-xl font-display font-black text-ink uppercase leading-none">Book Portal</div>
-              <div className="text-[10px] font-mono text-brand font-bold uppercase tracking-widest mt-1">Academic Resources</div>
+      {/* Premium Navbar */}
+      <nav className="fixed top-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-gray-100 h-20">
+        <div className="section-container h-full flex items-center justify-between">
+          <div 
+            className="flex items-center gap-3 cursor-pointer group"
+            onClick={onBack}
+          >
+            <div className="w-10 h-10 bg-dark rounded-xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+              <Library size={20} />
+            </div>
+            <div>
+              <span className="text-xl font-display font-black text-dark block leading-none">Digital Archive</span>
+              <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Book Portal</span>
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
-             <button 
-               onClick={onRegister}
-               className="bg-brand text-ink py-1.5 px-3 text-[10px] font-bold uppercase border-2 border-ink"
-             >
-               Inquiry
-             </button>
+          <div className="hidden md:flex items-center gap-6">
+            <button 
+              onClick={onRegister}
+              className="btn-primary-new px-6 py-2.5 text-[10px]"
+            >
+              Request Special Notes
+            </button>
           </div>
         </div>
       </nav>
 
-      <div className="max-w-[1600px] mx-auto px-8 relative">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
-          <div className="flex-1">
-            <div className="flex items-center gap-6 mb-6">
+      {/* Header Section */}
+      <header className="pt-48 pb-16 bg-white border-b border-gray-100">
+        <div className="section-container">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12">
+            <div className="max-w-3xl">
               <button 
-                onClick={activeModule ? () => setActiveModule(null) : onBack}
-                className="w-12 h-12 flex items-center justify-center border-4 border-ink bg-brand hover:scale-110 active:scale-95 transition-all shadow-[4px_4px_0_0_#1A1A1A]"
+                onClick={onBack}
+                className="group flex items-center gap-2 text-muted mb-8 hover:text-primary transition-colors"
               >
-                <ArrowRight className="rotate-180" size={24} />
+                <ArrowLeft size={18} className="group-hover:-translate-x-2 transition-transform" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">Return to Dashboard</span>
               </button>
-              <h2 className="text-4xl md:text-7xl font-display font-black uppercase tracking-tighter leading-none">
-                {activeModule ? (
-                  <>
-                    <span className="text-ink">{activeModule}</span> <span className="outline-text">Archive</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="text-ink">Book</span> <span className="outline-text">Portal</span>
-                  </>
-                )}
-              </h2>
+              <h1 className="text-5xl md:text-7xl font-display font-black text-dark leading-tight mb-6">
+                Knowledge <span className="text-primary text-glow">Repository</span>
+              </h1>
+              <p className="text-lg text-body font-body max-w-2xl leading-relaxed">
+                Access Nashik's most comprehensive digital library. Specialized notes and strategic roadmaps for all major competitive exams.
+              </p>
             </div>
-            <p className="text-muted text-lg font-body max-w-2xl leading-relaxed">
-              Access Nashik's most comprehensive digital library. Specialized notes and strategic PDF roadmaps for all major competitive exams.
+
+            <div className="w-full lg:w-96">
+              <div className="relative group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-primary transition-colors" size={20} />
+                <input 
+                  type="text" 
+                  placeholder="Search resources..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm font-body"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="py-16">
+        <div className="section-container">
+          {/* Filter Bar */}
+          <div className="mb-12 overflow-x-auto pb-4 scrollbar-hide">
+            <div className="flex gap-3 min-w-max">
+              {['All', ...categories].map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveModule(cat === 'All' ? null : cat)}
+                  className={`px-6 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest border transition-all ${
+                    (activeModule === cat || (cat === 'All' && !activeModule))
+                      ? 'bg-dark text-primary border-dark shadow-lg shadow-primary/5'
+                      : 'bg-white text-muted border-gray-100 hover:border-primary hover:text-primary'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Grid */}
+          <div className="min-h-[400px]">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-32 space-y-4">
+                <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+                <p className="text-xs font-bold text-muted uppercase tracking-[0.2em]">Indexing Library...</p>
+              </div>
+            ) : filteredBooks.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <AnimatePresence mode="popLayout">
+                  {filteredBooks.map((book: any, i) => (
+                    <motion.div 
+                      key={book._id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ delay: i * 0.05 }}
+                      className="bg-white rounded-3xl p-8 border border-gray-100 hover:shadow-2xl hover:shadow-primary/10 transition-all group flex flex-col h-full"
+                    >
+                      <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-dark group-hover:bg-primary group-hover:text-dark transition-colors mb-6">
+                        <Book size={24} />
+                      </div>
+                      
+                      <div className="flex-1">
+                        <span className="text-[10px] font-bold text-primary uppercase tracking-widest block mb-2">{book.category || 'Academic'}</span>
+                        <h4 className="text-xl font-display font-black text-dark mb-4 leading-tight group-hover:text-primary transition-colors">{book.title}</h4>
+                        {book.description && <p className="text-xs text-body line-clamp-3 mb-6 font-body leading-relaxed">{book.description}</p>}
+                      </div>
+
+                      <div className="pt-6 border-t border-gray-50 mt-auto">
+                        <a 
+                          href={book.pdfUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between group/btn"
+                          onClick={() => {
+                             fetch('/api/track/download', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ formType: book.title, studentName: 'Portal User' })
+                             });
+                          }}
+                        >
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-dark group-hover/btn:translate-x-2 transition-transform flex items-center gap-2">
+                            Download PDF <ArrowRight size={14} className="text-primary" />
+                          </span>
+                          <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover/btn:bg-primary/10">
+                            <Download size={14} className="text-dark" />
+                          </div>
+                        </a>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <div className="py-32 text-center max-w-md mx-auto">
+                <div className="w-20 h-20 bg-gray-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 text-muted/30">
+                  <Library size={40} />
+                </div>
+                <h3 className="text-2xl font-display font-black text-dark mb-4 uppercase">No matching resources</h3>
+                <p className="text-body font-body mb-8 leading-relaxed">
+                  We couldn't find any resources matching your search. Try adjusting your filters or search keywords.
+                </p>
+                <button 
+                  onClick={() => {setSearchQuery(""); setActiveModule(null)}}
+                  className="btn-outline-new px-8 py-3 text-xs"
+                >
+                  Clear all filters
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+
+      {/* Footer CTA */}
+      <section className="bg-dark py-24 text-center border-t-8 border-primary relative overflow-hidden">
+         <div className="section-container relative z-10">
+            <h2 className="text-4xl md:text-6xl font-display font-black text-white uppercase mb-8 leading-tight">
+              Cant find what you're <span className="text-primary text-glow">looking</span> for?
+            </h2>
+            <p className="text-white/60 mb-12 max-w-2xl mx-auto text-lg font-body">
+              Contact our academic team for personalized resource assistance or specific exam notes.
             </p>
-          </div>
-
-          <div className="flex flex-col items-start gap-2">
-            <span className="text-[10px] font-mono text-ink uppercase tracking-[0.3em] mb-2 font-bold">Quick Navigator</span>
-            <div className="relative group">
-              <select 
-                onChange={(e) => setActiveModule(e.target.value)}
-                value={activeModule || ""}
-                className="bg-white border-4 border-ink text-ink text-xs font-display font-black uppercase px-6 py-3 pr-12 appearance-none cursor-pointer focus:outline-none hover:bg-brand transition-all shadow-[4px_4px_0_0_#1A1A1A]"
+            <div className="flex flex-col sm:flex-row justify-center gap-6">
+               <button onClick={onRegister} className="btn-primary-new px-12 py-5 text-lg group">
+                  Contact Academic Support
+               </button>
+               <button 
+                onClick={() => setIsAdmissionModalOpen(true)}
+                className="btn-outline-new border-white/20 text-white hover:bg-white hover:text-dark px-12 py-5 text-lg"
               >
-                <option value="">Switch Module</option>
-                {syllabusItems.map(item => (
-                  <option key={item.name} value={item.name}>{item.name}</option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink pointer-events-none" />
+                Request Free Counselling
+               </button>
             </div>
-          </div>
-        </div>
-
-        <div className="bg-white border-4 border-ink p-8 md:p-12 min-h-[600px] shadow-[-12px_12px_0_0_#F7931A]">
-           <div className="mb-12 border-b-4 border-ink pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-             <div>
-               <h2 className="text-3xl font-display font-black uppercase">Digital Library</h2>
-               <p className="text-muted text-xs font-mono uppercase mt-2 tracking-widest">All Resources & Notes</p>
-             </div>
-             
-             {/* Dynamic Filter Bar */}
-             <div className="flex flex-wrap gap-2">
-               {['All', ...categories].map(cat => (
-                 <button
-                   key={cat}
-                   onClick={() => setActiveModule(cat === 'All' ? null : cat)}
-                   className={`px-4 py-2 text-[9px] font-black uppercase border-2 transition-all ${
-                     (activeModule === cat || (cat === 'All' && !activeModule))
-                       ? 'bg-brand text-ink border-ink'
-                       : 'bg-white text-ink/40 border-ink/10 hover:border-ink hover:text-ink'
-                   }`}
-                 >
-                   {cat}
-                 </button>
-               ))}
-             </div>
-           </div>
-
-           {loading ? (
-             <div className="py-20 text-center uppercase font-mono animate-pulse">Loading Library Resources...</div>
-           ) : books.length > 0 ? (
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-               {books.map((book: any) => (
-                 <div key={book._id} className="group relative bg-white border-2 border-ink p-6 flex flex-col gap-4 hover:-translate-y-1 transition-all hover:shadow-[6px_6px_0_0_#1A1A1A]">
-                   <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-ink text-brand flex items-center justify-center shrink-0">
-                         <Download size={24} />
-                      </div>
-                      <div>
-                        <h4 className="font-display font-black text-sm uppercase leading-tight">{book.title}</h4>
-                        <span className="text-[8px] font-mono text-muted uppercase tracking-widest">{book.category}</span>
-                      </div>
-                   </div>
-                   {book.description && <p className="text-[10px] text-muted line-clamp-2">{book.description}</p>}
-                   <a 
-                     href={book.pdfUrl} 
-                     target="_blank" 
-                     rel="noopener noreferrer"
-                     className="mt-4 w-full bg-brand text-ink py-2 text-[10px] font-black uppercase border-2 border-ink text-center hover:bg-ink hover:text-brand transition-all"
-                     onClick={() => {
-                        fetch('/api/track/download', {
-                           method: 'POST',
-                           headers: { 'Content-Type': 'application/json' },
-                           body: JSON.stringify({ formType: book.title, studentName: 'Portal User' })
-                        });
-                     }}
-                   >
-                     Download PDF
-                   </a>
-                 </div>
-               ))}
-             </div>
-           ) : (
-             <div className="py-20 text-center">
-               <div className="text-4xl opacity-10 mb-4">📚</div>
-               <h2 className="text-xl font-display font-black uppercase">No Resources Found</h2>
-               <p className="text-muted mt-2">Content for this section is being curated.</p>
-             </div>
-           )}
-        </div>
-      </div>
+         </div>
+      </section>
     </motion.div>
   );
 };

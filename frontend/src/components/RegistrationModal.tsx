@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronDown, Star } from 'lucide-react';
+import { X, ChevronDown, CheckCircle2, Send } from 'lucide-react';
 import { EXAM_CATEGORIES } from '../data/constants';
 
 type InquiryFormData = {
@@ -54,7 +54,7 @@ export default function RegistrationModal({
 
   const allSubExams = getSubExams();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     let { name, value } = e.target;
     if (name === 'phone') {
       value = value.replace(/\D/g, '').slice(0, 10);
@@ -101,75 +101,76 @@ export default function RegistrationModal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-start sm:justify-center p-4 sm:p-8 overflow-y-auto bg-ink/80 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 -z-10"
+            className="absolute inset-0 bg-dark/40 backdrop-blur-md"
             onClick={handleClose}
           />
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 30 }}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 30 }}
-            className="relative w-full max-w-[95vw] sm:max-w-xl bg-white border-4 border-ink p-5 sm:p-8 shadow-[8px_8px_0px_0px_rgba(26,26,26,1)] my-auto"
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            className="relative w-full max-w-xl bg-white rounded-[2.5rem] p-8 md:p-12 shadow-2xl overflow-hidden"
           >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+            
             <button
               onClick={handleClose}
-              className="absolute top-4 right-4 p-2 border-2 border-ink hover:bg-brand transition-all"
+              className="absolute top-8 right-8 p-2 text-muted hover:text-dark transition-colors"
             >
-              <X size={24} strokeWidth={2.5} />
+              <X size={24} />
             </button>
 
             <AnimatePresence mode="wait">
               {!isSubmitted ? (
                 <motion.div
                   key="form"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
                 >
-                  <div className="text-center mb-6">
-                    <h2 className="text-2xl sm:text-3xl font-display font-black text-ink mb-1 uppercase tracking-tighter">Inquiry Form</h2>
-                    <div className="text-brand text-sm font-mono font-bold tracking-widest mb-2 uppercase">Jay Hind</div>
-                    <div className="w-16 h-1 bg-brand mx-auto mb-3" />
-                    <p className="text-xs font-body text-muted italic">Share your details and our team will call you back.</p>
-                  </div>
+                  <header className="mb-10">
+                    <p className="label-text mb-2">Connect with us</p>
+                    <h2 className="text-3xl font-display font-black text-dark uppercase tracking-tight">Expert Consultation</h2>
+                    <p className="text-sm text-body mt-2">Start your journey with a personalized roadmap from our senior mentors.</p>
+                  </header>
 
-                  <form className="space-y-3" onSubmit={handleSubmit}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <form className="space-y-6" onSubmit={handleSubmit}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="font-mono text-[10px] uppercase tracking-widest font-medium text-muted">Full Name</label>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-muted ml-1">Full Name</label>
                         <input
                           required
                           name="name"
                           type="text"
                           value={formData.name}
                           onChange={handleInputChange}
-                          placeholder="John Doe"
-                          className="w-full bg-background border-2 border-ink px-4 py-2 text-sm text-ink font-body transition-all duration-200 focus:outline-none focus:border-brand"
+                          placeholder="Your Name"
+                          className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-primary/50 focus:bg-white transition-all"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="font-mono text-[10px] uppercase tracking-widest font-medium text-muted">Email Address</label>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-muted ml-1">Email Address</label>
                         <input
                           required
                           name="email"
                           type="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          placeholder="john@example.com"
-                          className="w-full bg-background border-2 border-ink px-4 py-2 text-sm text-ink font-body transition-all duration-200 focus:outline-none focus:border-brand"
+                          placeholder="Email"
+                          className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-primary/50 focus:bg-white transition-all"
                         />
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="font-mono text-[10px] uppercase tracking-widest font-medium text-muted">Mobile Number</label>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-muted ml-1">Phone Number</label>
                         <input
                           required
                           name="phone"
@@ -178,13 +179,13 @@ export default function RegistrationModal({
                           maxLength={10}
                           value={formData.phone}
                           onChange={handleInputChange}
-                          placeholder="9876543210"
-                          className="w-full bg-background border-2 border-ink px-4 py-2 text-sm text-ink font-body transition-all duration-200 focus:outline-none focus:border-brand"
+                          placeholder="10-digit number"
+                          className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-primary/50 focus:bg-white transition-all"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="font-mono text-[10px] uppercase tracking-widest font-medium text-muted">Primary Service</label>
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-muted ml-1">Exam Category</label>
                         <div className="relative">
                           <select
                             required
@@ -194,62 +195,46 @@ export default function RegistrationModal({
                               const value = e.target.value;
                               setFormData((prev) => ({ ...prev, category: value, subCategory: '' }));
                             }}
-                            className="w-full bg-background border-2 border-ink px-4 py-2 text-sm text-ink font-body appearance-none cursor-pointer transition-all duration-200 focus:outline-none focus:border-brand"
+                            className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-5 py-3 text-sm appearance-none focus:outline-none focus:border-primary/50 focus:bg-white transition-all cursor-pointer"
                           >
-                            <option value="">Choose Service</option>
+                            <option value="">Select Category</option>
                             <option value="UPSC">UPSC</option>
                             <option value="MPSC">MPSC</option>
                             <option value="SSC">SSC</option>
                             <option value="Banking">Banking</option>
                             <option value="Other">Other</option>
                           </select>
-                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-ink">
-                            <ChevronDown size={16} />
-                          </div>
+                          <ChevronDown size={16} className="absolute right-5 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
                         </div>
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <label className="font-mono text-[10px] uppercase tracking-widest font-medium text-muted">Sub-Service / Exam</label>
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-muted ml-1">Target Examination</label>
                       <div className="relative">
                         <select
                           required
                           name="subCategory"
                           value={formData.subCategory}
                           onChange={handleInputChange}
-                          className="w-full bg-background border-2 border-ink px-4 py-2 text-sm text-ink font-body appearance-none cursor-pointer transition-all duration-200 focus:outline-none focus:border-brand"
+                          className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-5 py-3 text-sm appearance-none focus:outline-none focus:border-primary/50 focus:bg-white transition-all cursor-pointer"
                         >
-                          <option value="">Choose Exam</option>
+                          <option value="">Select Exam</option>
                           {allSubExams.map((exam) => (
-                            <option key={exam} value={exam}>
-                              {exam}
-                            </option>
+                            <option key={exam} value={exam}>{exam}</option>
                           ))}
                         </select>
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-ink">
-                          <ChevronDown size={16} />
-                        </div>
+                        <ChevronDown size={16} className="absolute right-5 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
                       </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="font-mono text-[10px] uppercase tracking-widest font-medium text-muted">Full Address</label>
-                      <textarea
-                        name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        placeholder="2nd Floor, Gajanan Plaza, Gharpura Ghat Rd, Nashik, Maharashtra 422002"
-                        rows={2}
-                        className="w-full bg-background border-2 border-ink px-4 py-2 text-sm text-ink font-body transition-all duration-200 focus:outline-none focus:border-brand resize-none"
-                      />
                     </div>
 
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full bg-brand text-ink font-display font-bold uppercase tracking-wider px-8 py-3 transition-all duration-300 hover:bg-ink hover:text-brand disabled:opacity-50 text-sm mt-2"
+                      className="w-full btn-primary-new py-4 flex items-center justify-center gap-2 group"
                     >
-                      {isSubmitting ? 'Submitting...' : 'Submit Inquiry'}
+                      {isSubmitting ? 'Sending Request...' : 'Get Career Roadmap'}
+                      <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                     </button>
                   </form>
                 </motion.div>
@@ -258,41 +243,20 @@ export default function RegistrationModal({
                   key="success"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="text-center py-12"
+                  className="text-center py-8"
                 >
-                  <div className="w-20 h-20 bg-brand flex items-center justify-center mx-auto mb-8">
-                    <Star size={32} className="text-ink" fill="currentColor" />
+                  <div className="w-20 h-20 bg-primary/10 text-primary rounded-3xl flex items-center justify-center mx-auto mb-8">
+                    <CheckCircle2 size={40} />
                   </div>
-                  <h2 className="text-4xl font-display font-black text-ink mb-4 uppercase">Inquiry Submitted!</h2>
-                  <h3 className="text-xl text-brand font-mono uppercase tracking-wider mb-2">Jay Hind</h3>
-                  <div className="mb-8 p-6 bg-background border-2 border-ink/10 inline-block text-left w-full max-w-sm mx-auto">
-                    <div className="text-[10px] font-mono text-muted uppercase tracking-widest mb-1">Submitted Details</div>
-                    <div className="font-display font-black text-xl uppercase leading-none mb-4">{formData.name}</div>
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center text-xs">
-                        <span className="text-muted font-mono uppercase">Service</span>
-                        <span className="font-bold uppercase text-brand">{formData.category}</span>
-                      </div>
-                      <div className="flex justify-between items-start text-xs">
-                        <span className="text-muted font-mono uppercase">Examination</span>
-                        <span className="font-bold uppercase text-ink text-right max-w-[150px]">{formData.subCategory}</span>
-                      </div>
-                      {formData.address && (
-                        <div className="flex justify-between items-start text-xs">
-                          <span className="text-muted font-mono uppercase">Address</span>
-                          <span className="font-bold uppercase text-ink text-right max-w-[150px]">{formData.address}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted font-body max-w-sm mx-auto leading-relaxed mb-10 italic">
-                    Thanks. Our team will contact you shortly.
+                  <h2 className="text-3xl font-display font-black text-dark uppercase tracking-tight mb-4">Request Received</h2>
+                  <p className="body-text max-w-sm mx-auto mb-10">
+                    A senior mentor from {formData.category} department will contact you within 24 hours to discuss your roadmap.
                   </p>
                   <button
                     onClick={handleClose}
-                    className="bg-ink text-brand font-display font-bold uppercase tracking-wider px-10 py-4 transition-all duration-300 hover:bg-brand hover:text-ink"
+                    className="btn-outline-new px-12 py-4"
                   >
-                    Close
+                    Got it, Thanks
                   </button>
                 </motion.div>
               )}

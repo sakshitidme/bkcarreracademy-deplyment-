@@ -200,7 +200,7 @@ export default function App() {
                 setIsMenuOpen={setIsMenuOpen}
               />
 
-              <main className="pl-0 md:pl-52 relative min-h-screen">
+              <main className="pl-0 md:pl-64 relative min-h-screen">
                 <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.05]" 
                   style={{
                     backgroundImage: `linear-gradient(#1A1A1A 1px, transparent 1px), linear-gradient(90deg, #1A1A1A 1px, transparent 1px)`,
@@ -379,6 +379,8 @@ export default function App() {
                             examName={selectedExamName}
                             onBack={() => navigate('/courses')}
                             onRegister={() => setIsRegistrationModalOpen(true)}
+                            setIsRegistrationModalOpen={setIsRegistrationModalOpen}
+                            setIsAdmissionModalOpen={setIsAdmissionModalOpen}
                           />
                         } />
                       </Routes>

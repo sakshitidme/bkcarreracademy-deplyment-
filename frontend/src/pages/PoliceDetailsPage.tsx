@@ -14,9 +14,11 @@ import {
   Ruler, 
   Target,
   Users,
-  Globe
+  Globe,
+  ArrowRight,
+  ChevronRight,
+  Trophy
 } from 'lucide-react';
-import { BrandLogo } from '../components/common/BrandLogo';
 
 interface PoliceDetailsPageProps {
   onBack: () => void;
@@ -37,125 +39,135 @@ export const PoliceDetailsPage: React.FC<PoliceDetailsPageProps> = ({
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="min-h-screen bg-background relative selection:bg-brand selection:text-ink"
+      className="bg-bg min-h-screen"
     >
       {/* Premium Navbar */}
-      <nav className="fixed top-10 left-0 right-0 z-[100] px-4 sm:px-8 h-18 flex items-center justify-between bg-white border-b-4 border-ink shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-4 cursor-pointer"
-          onClick={() => setView('home')}
-        >
-          <BrandLogo className="w-10 h-10" />
-          <div className="flex flex-col mt-1">
-            <span className="text-xl font-display font-black uppercase text-ink leading-none">पोलीस भरती</span>
-            <span className="text-[10px] font-mono text-brand font-bold uppercase tracking-widest mt-1">Maharashtra State Police</span>
-          </div>
-        </motion.div>
-        
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={() => setIsRegistrationModalOpen(true)}
-            className="flex btn-brutalist bg-brand px-6 py-2 text-xs"
+      <nav className="fixed top-0 left-0 right-0 z-[100] bg-white/80 backdrop-blur-xl border-b border-gray-100 h-20">
+        <div className="section-container h-full flex items-center justify-between">
+          <div 
+            className="flex items-center gap-3 cursor-pointer group"
+            onClick={() => setView('home')}
           >
-            Inquiry
-          </button>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <header className="pt-32 pb-16 px-8 bg-ink relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 pointer-events-none"
-          style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, #FFC107 1px, transparent 0)`,
-            backgroundSize: '32px 32px'
-          }}
-        />
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-8">
-            <button 
-              onClick={onBack}
-              className="group flex items-center gap-2 text-brand hover:translate-x-1 transition-transform"
-            >
-              <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-              <span className="text-xs font-mono uppercase tracking-[0.3em] font-black">Return to Courses</span>
-            </button>
-            
+            <div className="w-10 h-10 bg-dark rounded-xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+              <Shield size={20} />
+            </div>
+            <div>
+              <span className="text-xl font-display font-black text-dark block leading-none">पोलीस भरती</span>
+              <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Maharashtra Police</span>
+            </div>
+          </div>
+          
+          <div className="hidden md:flex items-center gap-6">
             <a 
               href="https://policerecruitment2024.mahait.org" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 bg-brand text-ink px-6 py-3 border-4 border-ink shadow-[4px_4px_0_0_#000] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all text-xs font-black uppercase tracking-widest"
+              className="text-[10px] font-bold uppercase tracking-widest text-muted hover:text-primary transition-colors flex items-center gap-2"
             >
-              <Globe size={16} /> Official Recruitment Portal
+              <Globe size={14} /> Recruitment Portal
             </a>
+            <button 
+              onClick={() => setIsRegistrationModalOpen(true)}
+              className="btn-primary-new px-6 py-2.5 text-[10px]"
+            >
+              Start Training
+            </button>
           </div>
-          <h1 className="text-4xl md:text-7xl font-display font-black text-white uppercase tracking-tighter leading-none mb-6 italic">
-            Maharashtra <span className="text-brand">Police</span> Bharti
-          </h1>
-          <p className="text-white/60 text-lg md:text-xl font-body max-w-3xl leading-relaxed">
-            Your comprehensive orientation for the Maharashtra State Police recruitment — From application steps to physical and written exam mastery.
-          </p>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <header className="pt-48 pb-24 bg-dark relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 skew-x-[-20deg] origin-top translate-x-20" />
+        <div className="section-container relative z-10">
+          <button 
+            onClick={onBack}
+            className="group flex items-center gap-2 text-white/40 mb-8 hover:text-primary transition-colors"
+          >
+            <ArrowLeft size={18} className="group-hover:-translate-x-2 transition-transform" />
+            <span className="text-[10px] font-bold uppercase tracking-widest">Return to Courses</span>
+          </button>
+          <div className="max-w-4xl">
+            <h1 className="text-5xl md:text-7xl font-display font-black text-white leading-tight mb-8">
+              Maharashtra <span className="text-primary text-glow">Police</span> <br />Bharti Training
+            </h1>
+            <p className="text-xl text-white/60 font-body leading-relaxed max-w-3xl">
+              Comprehensive orientation for the Maharashtra State Police recruitment. From application mastery to physical endurance and written exam excellence.
+            </p>
+          </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-8 py-20 pb-40">
-        <div className="grid grid-cols-1 gap-32">
+      <main className="py-24">
+        <div className="section-container space-y-32">
           
-          {/* SECTION 1: अर्ज कसा भरायचा? */}
-          <section className="space-y-12">
-            <div className="flex items-center gap-6 mb-8 border-b-4 border-ink pb-6">
-              <div className="w-16 h-16 bg-brand border-4 border-ink flex items-center justify-center shadow-[4px_4px_0_0_#1A1A1A] shrink-0">
-                <UserPlus size={32} strokeWidth={3} />
+          {/* SECTION 1: PROCESS */}
+          <section className="scroll-mt-32">
+            <header className="mb-16">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+                  <UserPlus size={24} />
+                </div>
+                <h2 className="text-3xl md:text-4xl font-display font-black text-dark uppercase tracking-tight">अर्ज प्रक्रिया (Application Process)</h2>
               </div>
-              <h2 className="text-3xl md:text-5xl font-display font-black uppercase text-ink leading-none">
-                अर्ज कसा भरायचा? (Process)
-              </h2>
+            </header>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+              <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all">
+                <h3 className="text-lg font-display font-black text-dark uppercase mb-4">Recruitment Cycle</h3>
+                <p className="text-sm text-body leading-relaxed">
+                  Post-2019: Usually Written Exam followed by Physical Test. Note that sequence may change as per official notification.
+                </p>
+              </div>
+              <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all">
+                <h3 className="text-lg font-display font-black text-dark uppercase mb-4">Multiple Applications</h3>
+                <p className="text-sm text-body leading-relaxed">
+                  Candidates can now apply for multiple posts (Driver, Bandsman) across different districts separately.
+                </p>
+              </div>
+              <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all">
+                <h3 className="text-lg font-display font-black text-dark uppercase mb-4">Application Fee</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center py-2 border-b border-gray-50">
+                    <span className="text-xs text-muted uppercase font-bold">General</span>
+                    <span className="text-sm font-black text-dark">₹450</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-xs text-muted uppercase font-bold">Reserved</span>
+                    <span className="text-sm font-black text-dark">₹350</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-               <div className="bg-white border-4 border-ink p-8 shadow-[8px_8px_0_0_#1A1A1A] hover:bg-brand/5 transition-all">
-                  <h3 className="text-xl font-display font-black uppercase text-brand mb-4">भरती प्रक्रियेचा क्रम</h3>
-                  <p className="text-sm font-body text-ink/80 leading-relaxed">
-                    २०१९ पर्यंत: अर्ज {">"} मैदानी {">"} लेखी. <br/>
-                    २०१९ नंतर: लेखी आधी आणि नंतर मैदानी परीक्षा (टीप: जाहिरातीप्रमाणे बदल शक्य).
-                  </p>
-               </div>
-               <div className="bg-white border-4 border-ink p-8 shadow-[8px_8px_0_0_#1A1A1A] hover:shadow-[-8px_8px_0_0_#F7931A] transition-all">
-                  <h3 className="text-xl font-display font-black uppercase text-brand mb-4">एकापेक्षा जास्त अर्ज</h3>
-                  <p className="text-sm font-body text-ink/80 leading-relaxed">
-                    आता उमेदवार पात्रतेनुसार एकापेक्षा जास्त अर्ज भरू शकतात (उदा. चालक आणि बॅण्डसमन). जिल्ह्यानुसार स्वतंत्र अर्ज भरणे आवश्यक.
-                  </p>
-               </div>
-               <div className="bg-white border-4 border-ink p-8 shadow-[8px_8px_0_0_#1A1A1A] group">
-                  <h3 className="text-xl font-display font-black uppercase text-brand mb-4 group-hover:underline">अर्ज फी (अंदाजित)</h3>
-                  <p className="text-sm font-body text-ink/80 leading-relaxed">
-                    खुला प्रवर्ग: ४५० रुपये <br />
-                    राखीव प्रवर्ग: ३५० रुपये <br />
-                    <span className="text-[10px] italic">(जाहिरात आल्यावर अधिकृत फी समजेल)</span>
-                  </p>
-               </div>
-            </div>
-
-            <div className="bg-ink text-white p-8 border-4 border-ink relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-24 h-24 bg-brand rotate-45 translate-x-12 -translate-y-12" />
-               <h3 className="text-2xl font-display font-black uppercase text-brand mb-6">आवश्यक कागदपत्रे</h3>
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white rounded-[3rem] p-12 border border-gray-100 shadow-sm">
+               <h3 className="text-2xl font-display font-black text-dark uppercase mb-8 flex items-center gap-3">
+                 <FileText className="text-primary" /> आवश्यक कागदपत्रे (Required Documents)
+               </h3>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                   <ul className="space-y-4">
-                     {["शैक्षणिक पात्रता गुणपत्रिका (12th/10th)", "रहिवासी दाखला (Domicile)", "जातीचा दाखला (Caste Certificate)"].map((doc, i) => (
-                       <li key={i} className="flex items-center gap-3">
-                          <CheckCircle2 size={18} className="text-brand shrink-0" />
-                          <span className="font-bold text-sm">{doc}</span>
+                     {[
+                       "Educational Certificates (12th/10th)", 
+                       "Domicile Certificate", 
+                       "Caste Certificate (if applicable)",
+                       "Non-Creamy Layer Certificate"
+                     ].map((doc, i) => (
+                       <li key={i} className="flex items-center gap-3 text-sm text-body">
+                          <CheckCircle2 size={18} className="text-primary shrink-0" />
+                          <span>{doc}</span>
                        </li>
                      ))}
                   </ul>
                   <ul className="space-y-4">
-                     {["वाहन चालक परवाना (चालक पदासाठी)", "वाद्य प्रशिक्षण प्रमाणपत्र (बॅण्डसमनसाठी)", "महिलांसाठी लग्नानंतरचे नाव बदल दाखला"].map((doc, i) => (
-                       <li key={i} className="flex items-center gap-3">
-                          <CheckCircle2 size={18} className="text-brand shrink-0" />
-                          <span className="font-bold text-sm">{doc}</span>
+                     {[
+                       "Driving License (for Driver post)", 
+                       "Bandsman Certificate (if applicable)", 
+                       "Sports Certificate (for reservation)",
+                       "Valid Identity Proof (Aadhar/PAN)"
+                     ].map((doc, i) => (
+                       <li key={i} className="flex items-center gap-3 text-sm text-body">
+                          <CheckCircle2 size={18} className="text-primary shrink-0" />
+                          <span>{doc}</span>
                        </li>
                      ))}
                   </ul>
@@ -163,221 +175,199 @@ export const PoliceDetailsPage: React.FC<PoliceDetailsPageProps> = ({
             </div>
           </section>
 
-          {/* SECTION 2: पात्रता */}
-          <section className="space-y-12">
-            <div className="flex items-center gap-6 mb-8 border-b-4 border-ink pb-6">
-              <div className="w-16 h-16 bg-brand border-4 border-ink flex items-center justify-center shadow-[4px_4px_0_0_#1A1A1A] shrink-0">
-                <Shield size={32} strokeWidth={3} />
+          {/* SECTION 2: ELIGIBILITY */}
+          <section className="scroll-mt-32">
+            <header className="mb-16">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+                  <Shield size={24} />
+                </div>
+                <h2 className="text-3xl md:text-4xl font-display font-black text-dark uppercase tracking-tight">पात्रता निकष (Eligibility Criteria)</h2>
               </div>
-              <h2 className="text-3xl md:text-5xl font-display font-black uppercase text-ink leading-none">
-                पात्रता (Eligibility)
-              </h2>
-            </div>
+            </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-               <div className="bg-white border-4 border-ink p-6 hover:-translate-y-2 transition-transform shadow-[4px_4px_0_0_#1A1A1A]">
-                  <Zap className="text-brand mb-4" size={24} />
-                  <h4 className="font-display font-black uppercase text-ink text-sm mb-2">शिक्षण</h4>
-                  <p className="text-xs font-body text-ink/70">पोलीस शिपाई साठी १२ वी उत्तीर्ण. पण चालक व बॅण्डसमन पदासाठी १० वी उत्तीर्ण आवश्यक.</p>
-               </div>
-               <div className="bg-white border-4 border-ink p-6 hover:-translate-y-2 transition-transform shadow-[4px_4px_0_0_#1A1A1A]">
-                  <Clock className="text-brand mb-4" size={24} />
-                  <h4 className="font-display font-black uppercase text-ink text-sm mb-2">वयोमर्यादा</h4>
-                  <p className="text-xs font-body text-ink/70">किमान १८ वर्ष. खुल्या वर्गासाठी २८ वर्ष, तर राखीव प्रवर्गासाठी ३३ वर्षापर्यंत सूट.</p>
-               </div>
-               <div className="bg-white border-4 border-ink p-6 hover:-translate-y-2 transition-transform shadow-[4px_4px_0_0_#1A1A1A]">
-                  <Ruler className="text-brand mb-4" size={24} />
-                  <h4 className="font-display font-black uppercase text-ink text-sm mb-2">उंची</h4>
-                  <p className="text-xs font-body text-ink/70">मुले: १६५ सेमी (सशस्त्र: १६७ सेमी). <br/>मुली: १५० सेमी.</p>
-               </div>
-               <div className="bg-white border-4 border-ink p-6 hover:-translate-y-2 transition-transform shadow-[4px_4px_0_0_#1A1A1A]">
-                  <Scale className="text-brand mb-4" size={24} />
-                  <h4 className="font-display font-black uppercase text-ink text-sm mb-2">वजन</h4>
-                  <p className="text-xs font-body text-ink/70">मुले: किमान ५० किलो. <br/>मुली: किमान ४५ किलो.</p>
-               </div>
-            </div>
-            <div className="p-4 bg-ink text-brand font-mono text-[10px] uppercase text-center tracking-widest border-2 border-ink italic">
-               दिव्यांग/अपंग व्यक्ती पोलीस शिपाई पदासाठी पात्र नसतात.
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+               {[
+                 { icon: Zap, label: "Education", val: "12th Pass for Constable, 10th for Driver/Bandsman." },
+                 { icon: Clock, label: "Age Limit", val: "18 – 28 years (General), up to 33 years for Reserved." },
+                 { icon: Ruler, label: "Height", val: "Male: 165cm+ | Female: 155cm+" },
+                 { icon: Scale, label: "Weight", val: "Male: 50kg+ | Female: 45kg+" },
+               ].map((item, i) => (
+                 <div key={i} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:border-primary transition-all">
+                    <item.icon className="text-primary mb-6" size={28} />
+                    <h4 className="text-sm font-display font-black text-dark uppercase mb-3">{item.label}</h4>
+                    <p className="text-xs text-body leading-relaxed">{item.val}</p>
+                 </div>
+               ))}
             </div>
           </section>
 
-          {/* SECTION 3: मैदानी परीक्षा */}
-          <section className="space-y-12">
-            <div className="flex items-center gap-6 mb-8 border-b-4 border-ink pb-6">
-              <div className="w-16 h-16 bg-brand border-4 border-ink flex items-center justify-center shadow-[4px_4px_0_0_#1A1A1A] shrink-0">
-                <Dumbbell size={32} strokeWidth={3} />
+          {/* SECTION 3: PHYSICAL TEST */}
+          <section className="scroll-mt-32">
+            <header className="mb-16">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+                  <Dumbbell size={24} />
+                </div>
+                <h2 className="text-3xl md:text-4xl font-display font-black text-dark uppercase tracking-tight">मैदानी चाचणी (Physical Endurance)</h2>
               </div>
-              <h2 className="text-3xl md:text-5xl font-display font-black uppercase text-ink leading-none">
-                मैदानी परीक्षा (Physical Test)
-              </h2>
-            </div>
+            </header>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-               {/* Boys */}
-               <div className="bg-white border-4 border-ink relative">
-                  <div className="bg-ink text-white p-4 font-display font-black uppercase text-center tracking-widest">मुलांसाठी (Boys - 50 Marks)</div>
-                  <div className="p-8 space-y-6">
-                     <div className="flex justify-between items-center border-b-2 border-ink/10 pb-4">
-                        <div>
-                          <h4 className="font-display font-black text-ink uppercase">१६०० मीटर धावणे</h4>
-                          <p className="text-[10px] font-mono text-muted">Target: ५ मि १० सेकंद</p>
-                        </div>
-                        <span className="text-2xl font-display font-black text-brand">२० गुण</span>
-                     </div>
-                     <div className="flex justify-between items-center border-b-2 border-ink/10 pb-4">
-                        <div>
-                          <h4 className="font-display font-black text-ink uppercase">१०० मीटर धावणे</h4>
-                          <p className="text-[10px] font-mono text-muted">Target: ११:५० सेकंद</p>
-                        </div>
-                        <span className="text-2xl font-display font-black text-brand">१५ गुण</span>
-                     </div>
-                     <div className="flex justify-between items-center">
-                        <div>
-                          <h4 className="font-display font-black text-ink uppercase">गोळाफेक</h4>
-                          <p className="text-[10px] font-mono text-muted">वजन: ७.२५ किलो | Target: ८.५ मी</p>
-                        </div>
-                        <span className="text-2xl font-display font-black text-brand">१५ गुण</span>
-                     </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+               <div className="bg-dark rounded-[3rem] p-12 text-white relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[60px] rounded-full" />
+                  <h4 className="text-2xl font-display font-black uppercase text-primary mb-10 border-l-4 border-primary pl-6">Male (मुलांसाठी - 50 Marks)</h4>
+                  <div className="space-y-8">
+                     {[
+                       { task: "1600m Running", sub: "Target: 5m 10s", pts: "20" },
+                       { task: "100m Sprint", sub: "Target: 11.5s", pts: "15" },
+                       { task: "Shot Put (7.25kg)", sub: "Target: 8.5m", pts: "15" }
+                     ].map((row, i) => (
+                       <div key={i} className="flex justify-between items-center group/item border-b border-white/5 pb-6">
+                          <div>
+                            <h5 className="text-lg font-display font-black uppercase mb-1">{row.task}</h5>
+                            <p className="text-xs text-white/40 font-bold">{row.sub}</p>
+                          </div>
+                          <span className="text-3xl font-display font-black text-primary">{row.pts}</span>
+                       </div>
+                     ))}
                   </div>
                </div>
 
-               {/* Girls */}
-               <div className="bg-white border-4 border-ink relative">
-                  <div className="bg-brand text-ink p-4 font-display font-black uppercase text-center tracking-widest border-b-4 border-ink">मुलींसाठी (Girls - 50 Marks)</div>
-                  <div className="p-8 space-y-6">
-                     <div className="flex justify-between items-center border-b-2 border-ink/10 pb-4">
-                        <div>
-                          <h4 className="font-display font-black text-ink uppercase">८०० मीटर धावणे</h4>
-                          <p className="text-[10px] font-mono text-muted">Target: २ मि ५० सेकंद</p>
-                        </div>
-                        <span className="text-2xl font-display font-black text-brand">२० गुण</span>
-                     </div>
-                     <div className="flex justify-between items-center border-b-2 border-ink/10 pb-4">
-                        <div>
-                          <h4 className="font-display font-black text-ink uppercase">१०० मीटर धावणे</h4>
-                          <p className="text-[10px] font-mono text-muted">Target: १४:०० सेकंद</p>
-                        </div>
-                        <span className="text-2xl font-display font-black text-brand">१५ गुण</span>
-                     </div>
-                     <div className="flex justify-between items-center">
-                        <div>
-                          <h4 className="font-display font-black text-ink uppercase">गोळाफेक</h4>
-                          <p className="text-[10px] font-mono text-muted">वजन: ४ किलो | Target: ६ मी</p>
-                        </div>
-                        <span className="text-2xl font-display font-black text-brand">१५ गुण</span>
-                     </div>
+               <div className="bg-white rounded-[3rem] p-12 border border-gray-100 shadow-sm relative overflow-hidden group">
+                  <h4 className="text-2xl font-display font-black uppercase text-dark mb-10 border-l-4 border-primary pl-6">Female (मुलींसाठी - 50 Marks)</h4>
+                  <div className="space-y-8">
+                     {[
+                       { task: "800m Running", sub: "Target: 2m 50s", pts: "20" },
+                       { task: "100m Sprint", sub: "Target: 14s", pts: "15" },
+                       { task: "Shot Put (4kg)", sub: "Target: 6m", pts: "15" }
+                     ].map((row, i) => (
+                       <div key={i} className="flex justify-between items-center group/item border-b border-gray-50 pb-6">
+                          <div>
+                            <h5 className="text-lg font-display font-black uppercase mb-1 text-dark">{row.task}</h5>
+                            <p className="text-xs text-muted font-bold">{row.sub}</p>
+                          </div>
+                          <span className="text-3xl font-display font-black text-primary">{row.pts}</span>
+                       </div>
+                     ))}
                   </div>
                </div>
             </div>
           </section>
 
-          {/* SECTION 4: लेखी परीक्षा */}
-          <section className="space-y-12">
-            <div className="flex items-center gap-6 mb-8 border-b-4 border-ink pb-6">
-              <div className="w-16 h-16 bg-brand border-4 border-ink flex items-center justify-center shadow-[4px_4px_0_0_#1A1A1A] shrink-0">
-                <FileText size={32} strokeWidth={3} />
+          {/* SECTION 4: WRITTEN TEST */}
+          <section className="scroll-mt-32">
+            <header className="mb-16">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+                  <FileText size={24} />
+                </div>
+                <h2 className="text-3xl md:text-4xl font-display font-black text-dark uppercase tracking-tight">लेखी परीक्षा (Written Assessment)</h2>
               </div>
-              <h2 className="text-3xl md:text-5xl font-display font-black uppercase text-ink leading-none">
-                लेखी परीक्षा (Written Test)
-              </h2>
-            </div>
-
-            <div className="bg-white border-4 border-ink p-6 md:p-12 shadow-[12px_12px_0_0_#1A1A1A]">
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
-                   <div className="md:col-span-4 space-y-6">
-                      <div className="p-6 bg-ink text-white border-4 border-ink">
-                         <div className="text-[10px] font-mono text-brand uppercase mb-2">Total Score</div>
-                         <div className="text-4xl font-display font-black">१०० गुण</div>
+            </header>
+ 
+            <div className="bg-white rounded-[3rem] p-12 border border-gray-100 shadow-sm">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                   <div className="lg:col-span-4 space-y-6">
+                      <div className="p-8 bg-dark rounded-[2rem] text-white">
+                         <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-2">Maximum Score</p>
+                         <p className="text-5xl font-display font-black">100</p>
                       </div>
-                      <div className="p-6 bg-background border-4 border-ink border-dashed">
-                         <div className="text-[10px] font-mono text-ink uppercase mb-2">Time Allocated</div>
-                         <div className="text-2xl font-display font-black">९० मिनिटे (१.५ तास)</div>
+                      <div className="p-8 bg-gray-50 rounded-[2rem]">
+                         <p className="text-[10px] font-bold text-muted uppercase tracking-widest mb-2">Duration</p>
+                         <p className="text-2xl font-display font-black text-dark">90 Minutes</p>
                       </div>
                    </div>
-                   <div className="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                   <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
                       {[
-                        { t: "अंकगणित", d: "संख्याप्रकार, बेरीज-वजाबाकी, सरासरी, नफा-तोटा, काळ-काम-वेग", m: "२५" },
-                        { t: "बुद्धिमत्ता", d: "अक्षरमाला, सांकेतिक लिपी, नातेसंबंध, दिशा, कूटप्रश्न", m: "२५" },
-                        { t: "मराठी व्याकरण", d: "वर्णमाला, संधी, समास, शब्दांच्या जाती, शुद्धलेखन", m: "२५" },
-                        { t: "GK & चालू घडामोडी", d: "भूगोल, राज्यघटना, ऐतिहासिक घटना, नियुक्त्या", m: "२५" },
+                        { t: "Arithmetic", d: "Number types, Profit/Loss, Time & Work", m: "25" },
+                        { t: "Reasoning", d: "Logical codes, Relations, Directions", m: "25" },
+                        { t: "Marathi Grammar", d: "Sandhi, Samas, Vocabulary", m: "25" },
+                        { t: "GK & Current Affairs", d: "Geography, History, Appointments", m: "25" },
                       ].map((sub, i) => (
-                        <div key={i} className="p-6 border-2 border-ink bg-white hover:bg-brand/10 transition-colors">
-                           <div className="flex justify-between items-start mb-2">
-                              <h4 className="font-display font-black text-ink uppercase text-sm">{sub.t}</h4>
-                              <span className="text-xs font-mono font-black text-brand">{sub.m} Marks</span>
+                        <div key={i} className="p-6 bg-white border border-gray-100 rounded-2xl hover:border-primary transition-all group">
+                           <div className="flex justify-between items-start mb-3">
+                              <h4 className="text-sm font-display font-black text-dark uppercase">{sub.t}</h4>
+                              <span className="text-xs font-bold text-primary">{sub.m} Pts</span>
                            </div>
-                           <p className="text-[10px] text-ink/70 leading-relaxed font-body">{sub.d}</p>
+                           <p className="text-xs text-body leading-relaxed">{sub.d}</p>
                         </div>
                       ))}
                    </div>
                 </div>
             </div>
           </section>
-
-          {/* SECTION 5: तयारी आणि टिप्स */}
-          <section className="space-y-12">
-            <div className="flex items-center gap-6 mb-8 border-b-4 border-ink pb-6">
-              <div className="w-16 h-16 bg-brand border-4 border-ink flex items-center justify-center shadow-[4px_4px_0_0_#1A1A1A] shrink-0">
-                <Target size={32} strokeWidth={3} />
+ 
+          {/* SECTION 5: STRATEGY */}
+          <section className="scroll-mt-32">
+            <header className="mb-16">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+                  <Target size={24} />
+                </div>
+                <h2 className="text-3xl md:text-4xl font-display font-black text-dark uppercase tracking-tight">यशस्वी दिनचर्या (Success Strategy)</h2>
               </div>
-              <h2 className="text-3xl md:text-5xl font-display font-black uppercase text-ink leading-none">
-                तयारी कशी करावी? (Prep Strategy)
-              </h2>
-            </div>
-
+            </header>
+ 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-               <div className="bg-white border-4 border-ink p-8 relative overflow-hidden group">
-                  <Utensils className="absolute -top-4 -right-4 text-brand opacity-10 group-hover:scale-125 transition-transform" size={120} />
-                  <h3 className="text-xl font-display font-black uppercase text-ink mb-4 border-b-2 border-brand pb-2">परिपूर्ण आहार</h3>
-                  <ul className="space-y-3 text-sm font-body text-ink/80">
-                    <li>• चणा-हरभरा, डाळी</li>
-                    <li>• पालेभाज्या आणि अंडी</li>
-                    <li>• शरीराला हायड्रेटेड ठेवा</li>
+               <div className="bg-white rounded-3xl p-10 border border-gray-100 hover:shadow-xl transition-all">
+                  <Utensils className="text-primary mb-8" size={32} />
+                  <h3 className="text-xl font-display font-black text-dark uppercase mb-4 border-b-2 border-primary/20 pb-4">Balanced Diet</h3>
+                  <ul className="space-y-4 text-sm text-body">
+                    <li className="flex gap-3"><ChevronRight size={16} className="text-primary shrink-0" /> High protein intake (Pulses/Eggs)</li>
+                    <li className="flex gap-3"><ChevronRight size={16} className="text-primary shrink-0" /> Green vegetables for stamina</li>
+                    <li className="flex gap-3"><ChevronRight size={16} className="text-primary shrink-0" /> Maximum hydration (4L+ Water)</li>
                   </ul>
                </div>
-               <div className="bg-white border-4 border-ink p-8 relative overflow-hidden group shadow-[8px_8px_0_0_#1A1A1A]">
-                  <Clock className="absolute -top-4 -right-4 text-brand opacity-10 group-hover:scale-125 transition-transform" size={120} />
-                  <h3 className="text-xl font-display font-black uppercase text-ink mb-4 border-b-2 border-brand pb-2">दिनचर्या</h3>
-                  <ul className="space-y-3 text-sm font-body text-ink/80">
-                    <li>• किमान ७ तास गाढ झोप</li>
-                    <li>• पहाटे लवकर उठण्याची सवय</li>
-                    <li>• रोज वर्तमानपत्र वाचणे</li>
+               <div className="bg-white rounded-3xl p-10 border border-gray-100 shadow-xl shadow-primary/5">
+                  <Clock className="text-primary mb-8" size={32} />
+                  <h3 className="text-xl font-display font-black text-dark uppercase mb-4 border-b-2 border-primary/20 pb-4">Daily Routine</h3>
+                  <ul className="space-y-4 text-sm text-body">
+                    <li className="flex gap-3"><ChevronRight size={16} className="text-primary shrink-0" /> Minimum 7 hours of deep sleep</li>
+                    <li className="flex gap-3"><ChevronRight size={16} className="text-primary shrink-0" /> Pre-dawn physical practice</li>
+                    <li className="flex gap-3"><ChevronRight size={16} className="text-primary shrink-0" /> Regular newspaper analysis</li>
                   </ul>
                </div>
-               <div className="bg-white border-4 border-ink p-8 relative overflow-hidden group">
-                  <Users className="absolute -top-4 -right-4 text-brand opacity-10 group-hover:scale-125 transition-transform" size={120} />
-                  <h3 className="text-xl font-display font-black uppercase text-ink mb-4 border-b-2 border-brand pb-2">स्मार्ट स्टडी</h3>
-                  <ul className="space-y-3 text-sm font-body text-ink/80">
-                    <li>• मागील वर्षाचे पेपर्स सोडवणे</li>
-                    <li>• महत्वपूर्ण नोट्स काढून ठेवणे</li>
-                    <li>• ७०% अभ्यासक्रम हा मागील बेसवर असतो</li>
+               <div className="bg-white rounded-3xl p-10 border border-gray-100 hover:shadow-xl transition-all">
+                  <Users className="text-primary mb-8" size={32} />
+                  <h3 className="text-xl font-display font-black text-dark uppercase mb-4 border-b-2 border-primary/20 pb-4">Smart Study</h3>
+                  <ul className="space-y-4 text-sm text-body">
+                    <li className="flex gap-3"><ChevronRight size={16} className="text-primary shrink-0" /> Solve last 5 years' papers</li>
+                    <li className="flex gap-3"><ChevronRight size={16} className="text-primary shrink-0" /> Focus on repeated patterns</li>
+                    <li className="flex gap-3"><ChevronRight size={16} className="text-primary shrink-0" /> Strategic notes for quick revision</li>
                   </ul>
                </div>
             </div>
-
-            <div className="bg-brand border-4 border-ink p-8 text-center">
-               <p className="font-display font-black uppercase text-ink text-lg leading-relaxed">
-                  पोलीस प्रशिक्षण अकॅडमीमध्ये प्रवेश घेतल्यास तज्ज्ञ मार्गदर्शक आणि शिस्तबद्ध सरावाचा फायदा होतो.
+ 
+            <div className="mt-16 p-10 bg-primary rounded-[2.5rem] text-center shadow-lg shadow-primary/20">
+               <p className="text-2xl font-display font-black text-dark uppercase leading-tight">
+                  Join BK Career Academy to experience disciplined training and expert mentorship.
                </p>
-               <span className="block mt-4 text-[10px] font-mono font-black uppercase tracking-widest text-ink italic opacity-60">Success is a journey of consistency.</span>
             </div>
           </section>
-
+ 
         </div>
       </main>
-
-      {/* Global Footer Call to Action */}
-      <section className="bg-ink py-24 px-8 text-center border-t-8 border-brand">
-         <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl md:text-6xl font-display font-black text-white uppercase mb-8">
-              Join the <span className="text-brand">BK Career Academy</span> Police Force Batch
+ 
+      {/* Footer CTA */}
+      <section className="bg-dark py-24 text-center border-t-8 border-primary relative overflow-hidden">
+         <div className="absolute top-0 left-0 w-full h-full bg-primary/5 z-0" />
+         <div className="section-container relative z-10">
+            <h2 className="text-4xl md:text-6xl font-display font-black text-white uppercase mb-8 leading-tight">
+              Answer the <span className="text-primary text-glow">Call</span> to Duty
             </h2>
+            <p className="text-white/60 mb-12 max-w-2xl mx-auto text-lg font-body">
+              Your journey to wearing the uniform begins with the right guidance. Join our upcoming batch in Nashik.
+            </p>
             <div className="flex flex-col sm:flex-row justify-center gap-6">
-               <button onClick={onRegister} className="btn-brutalist bg-brand px-12 py-5 text-lg">
-                  Register For Batch
+               <button onClick={onRegister} className="btn-primary-new px-12 py-5 text-lg group">
+                  Apply for Batch 2026
                </button>
-               <button onClick={() => setIsAdmissionModalOpen(true)} className="btn-brutalist bg-white text-ink px-12 py-5 text-lg">
-                  Enquiry Now
+               <button 
+                onClick={() => setIsAdmissionModalOpen(true)}
+                className="btn-outline-new border-white/20 text-white hover:bg-white hover:text-dark px-12 py-5 text-lg"
+              >
+                Request Free Counselling
                </button>
             </div>
          </div>
@@ -385,5 +375,5 @@ export const PoliceDetailsPage: React.FC<PoliceDetailsPageProps> = ({
     </motion.div>
   );
 };
-
+ 
 export default PoliceDetailsPage;

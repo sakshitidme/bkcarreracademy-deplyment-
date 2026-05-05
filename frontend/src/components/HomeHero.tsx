@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
-import { ArrowRight, Play } from "lucide-react";
-import { ExamAnimation3D } from "./ExamAnimation3D";
+import { ArrowRight, Play, CheckCircle } from "lucide-react";
+import StudentSuccessShorts from "./StudentSuccessShorts";
 
 interface HomeHeroProps {
   setView: (view: string) => void;
@@ -12,174 +12,121 @@ interface HomeHeroProps {
 }
 
 export const HomeHero: React.FC<HomeHeroProps> = ({ 
-  onRegistration, 
-  heroContent 
+  onRegistration,
+  onAdmission 
 }) => {
   
-  const title = heroContent?.title || "MAHA-TET";
-  const watchUrl = heroContent?.buttonUrl || "https://www.youtube.com/@bkcareeracademy2025";
-  const mediaItems = heroContent?.media || [];
-  
-  const [activeMediaIndex, setActiveMediaIndex] = React.useState(0);
-  const defaultMedia = [
-    { mediaType: 'youtube' as const, src: 'Jof92fozWuk', title: 'Student Success 1' },
-    { mediaType: 'youtube' as const, src: 'z18YX4x1Lw8', title: 'Student Success 2' },
-    { mediaType: 'youtube' as const, src: 'wn7i39rNblw', title: 'Student Success 3' }
-  ];
-  const mediaToDisplay = mediaItems.length > 0 ? mediaItems : defaultMedia;
-
-  React.useEffect(() => {
-    if (mediaToDisplay.length <= 1) return;
-    const timer = setInterval(() => {
-      setActiveMediaIndex((prev) => (prev + 1) % mediaToDisplay.length);
-    }, 8000); // 8 seconds per video
-    return () => clearInterval(timer);
-  }, [mediaToDisplay.length]);
-
-  const activeMedia = mediaToDisplay[activeMediaIndex];
-
-  const getYoutubeId = (url: string) => {
-    if (!url) return '';
-    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
-    return match ? match[1] : url;
-  };
-
-  const youtubeId = activeMedia?.mediaType === 'youtube' ? getYoutubeId(activeMedia.src) : '';
-
   return (
-    <section className="relative min-h-[85vh] flex items-center justify-center px-6 py-20 overflow-hidden bg-gradient-to-br from-white via-[#f8fbff] to-[#eef3fb]">
-      
-      {/* Decorative Background Blobs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-400/5 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-gray-400/10 blur-[160px]" />
-        <div className="absolute center w-[30%] h-[30%] rounded-full bg-blue-300/5 blur-[100px]" />
-      </div>
+    <section className="relative min-h-[90vh] flex items-center pt-24 pb-16 bg-bg overflow-hidden">
+      {/* Decorative Elements */}
+      <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 -skew-x-12 transform translate-x-1/2 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-[100px] -translate-x-1/2 translate-y-1/2 pointer-events-none" />
 
-      <div className="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 lg:gap-20 items-center relative z-10">
-        
-        {/* Left Column: Content */}
-        <div className="flex flex-col items-start text-left space-y-8">
+      <div className="section-container relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex items-center gap-3 bg-white border border-gray-100 rounded-full px-5 py-2.5 shadow-sm"
-          >
-            <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-            <span className="text-[12px] font-display font-bold uppercase tracking-widest text-blue-600">
-              SINCE 2009
-            </span>
-          </motion.div>
-
-          {/* Title Section */}
-          <ExamAnimation3D 
-            title={heroContent?.title || "Banking"} 
-            accentColor={heroContent?.title ? (heroContent?.title === "Banking" ? "#FFC107" : "#00C853") : "#FFC107"} 
-          />
-
-          {/* Description / Subtitle - added for better balance, can be pulled from backend too if needed */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 1 }}
-            className="text-gray-500 text-lg md:text-xl font-body max-w-xl leading-relaxed"
-          >
-            Empowering aspirants with excellence since 2009. Join the league of successful officers with Maharashtra's premier coaching academy.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            className="flex flex-col sm:flex-row items-center gap-6 w-full sm:w-auto"
-          >
-            {/* Primary CTA */}
-            <button
-              onClick={onRegistration}
-              className="group relative h-[68px] px-10 bg-gradient-to-r from-blue-600 to-yellow-500 rounded-full flex items-center justify-center gap-3 text-white font-display font-bold text-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 w-full sm:w-auto"
+          {/* Content Side */}
+          <div className="flex flex-col items-start space-y-8">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-3"
             >
-              Get Started for Free
-              <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
-            </button>
-
-            {/* Secondary CTA */}
-            <a
-              href={watchUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group h-[68px] px-10 bg-white border border-gray-100 rounded-full flex items-center justify-center gap-3 text-gray-800 font-display font-bold text-lg shadow-sm hover:shadow-md hover:-translate-y-1 transition-all w-full sm:w-auto"
-            >
-              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                <Play size={18} fill="currentColor" />
+              <div className="px-4 py-1.5 bg-primary/10 rounded-full border border-primary/20">
+                <span className="text-primary font-bold text-[10px] uppercase tracking-widest">Since 2009</span>
               </div>
-              Watch Video Lectures
-            </a>
-          </motion.div>
-        </div>
+              <div className="px-4 py-1.5 bg-white rounded-full shadow-sm border border-gray-100">
+                <span className="text-dark font-bold text-[10px] uppercase tracking-widest">Trusted by 10,000+ Students</span>
+              </div>
+            </motion.div>
 
-        {/* Right Column: Phone/Video Frame */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9, x: 50 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
-          className="relative flex justify-center lg:justify-end"
-        >
-          {/* Outer Glow Halo */}
-          <div className="absolute inset-0 bg-blue-400/10 blur-[80px] rounded-full transform scale-75" />
-          
-          {/* Phone Shell */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="hero-heading"
+            >
+              Your Career,<br />
+              <span className="whitespace-nowrap text-dark">Our <span className="text-primary">Commitment.</span></span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="body-text text-lg max-w-xl"
+            >
+              Prepare for UPSC, PSI, STI, and other competitive exams with Nashik's most experienced mentors. We don't just teach subjects; we shape futures.
+            </motion.p>
+
+            <motion.ul
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="space-y-3"
+            >
+              {["Expert Faculty from Delhi & Pune", "Comprehensive Study Material", "Regular Mock Test Series"].map((item, i) => (
+                <li key={i} className="flex items-center gap-3 text-body font-medium">
+                  <CheckCircle size={18} className="text-primary" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </motion.ul>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="flex flex-row items-center gap-4 w-full"
+            >
+              <button
+                onClick={() => window.open("https://youtube.com/@bkcareeracademy2025?si=Rgum3MpCrkzthafB", "_blank")}
+                className="btn-primary-new flex items-center gap-3 whitespace-nowrap"
+              >
+                Start Learning
+                <ArrowRight size={18} />
+              </button>
+              <button
+                onClick={onRegistration}
+                className="btn-outline-new flex items-center gap-3 whitespace-nowrap"
+              >
+                Book Free Demo
+              </button>
+            </motion.div>
+          </div>
+
+          {/* Image/Video Side */}
           <motion.div
-            animate={{ y: [0, -15, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="relative w-[320px] h-[640px] bg-white rounded-[3rem] p-4 shadow-[0_40px_100px_rgba(0,0,0,0.1)] border-[12px] border-white ring-1 ring-gray-100"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="relative flex justify-center lg:justify-end"
           >
-            {/* Phone Top Details */}
-            <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-gray-100 rounded-full z-20" />
-            
-            {/* Viewport Area */}
-            <div className="w-full h-full rounded-[2rem] bg-gray-900 overflow-hidden relative">
-              {activeMedia.mediaType === 'youtube' ? (
-                <iframe
-                  className="w-full h-full object-cover scale-[1.3]"
-                  src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&showinfo=0&rel=0&modestbranding=1`}
-                  title={activeMedia.title || "Hero Video"}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              ) : activeMedia.mediaType === 'video' ? (
-                <video
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  poster={activeMedia.poster}
-                  className="w-full h-full object-cover"
-                >
-                  <source src={activeMedia.src} type="video/mp4" />
-                </video>
-              ) : (
-                <img 
-                  src={activeMedia.src} 
-                  alt={activeMedia.title || "BK Career Academy Success Story Image"}
-                  className="w-full h-full object-cover"
-                />
-              )}
+            <div className="w-full max-w-[280px] md:max-w-[320px] relative z-10">
+              <StudentSuccessShorts />
               
-              {/* Shine Sweep Overlay */}
-              <motion.div
-                animate={{ left: ["-100%", "200%"] }}
-                transition={{ duration: 4, repeat: Infinity, repeatDelay: 2, ease: "easeInOut" }}
-                className="absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12 z-10 pointer-events-none"
-              />
+              {/* Stats Overlay */}
+              <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl border border-gray-100 z-20">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                    <Play size={20} fill="currentColor" />
+                  </div>
+                  <div>
+                    <p className="text-dark font-black text-2xl leading-none">15+</p>
+                    <p className="text-muted text-[10px] uppercase font-bold tracking-widest mt-1">Years of Excellence</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Decorative Dots */}
+              <div className="absolute -top-10 -right-10 w-24 h-24 grid grid-cols-4 gap-2 opacity-20 -z-10">
+                {[...Array(16)].map((_, i) => (
+                  <div key={i} className="w-2 h-2 rounded-full bg-dark" />
+                ))}
+              </div>
             </div>
           </motion.div>
-        </motion.div>
-
+        </div>
       </div>
     </section>
   );
